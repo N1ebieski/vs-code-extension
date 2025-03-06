@@ -9,7 +9,8 @@ type ConfigKey =
     | "tests.docker.enabled"
     | "tests.ssh.enabled"
     | "tests.suiteSuffix"
-    | "showErrorPopups";
+    | "showErrorPopups"
+    | "blade.autoSpaceTags";
 
 export const config = <T>(key: ConfigKey, fallback: T): T =>
     vscode.workspace.getConfiguration("Laravel").get<T>(key, fallback);
@@ -21,4 +22,10 @@ export const configAffected = (
     ...keys: ConfigKey[]
 ): boolean => keys.some((key) => event.affectsConfiguration(configKey(key)));
 
-export type PhpEnvironment = "auto" | "herd" | "valet" | "sail" | "local";
+export type PhpEnvironment =
+    | "auto"
+    | "herd"
+    | "valet"
+    | "sail"
+    | "local"
+    | "lando";

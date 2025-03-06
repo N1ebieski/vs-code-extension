@@ -3,7 +3,7 @@
     "publisher": "laravel",
     "displayName": "Laravel",
     "description": "Official VS Code extension for Laravel",
-    "version": "1.0.0",
+    "version": "1.0.1",
     "engines": {
         "vscode": "^1.89.0"
     },
@@ -77,6 +77,7 @@
                         "herd",
                         "valet",
                         "sail",
+                        "lando",
                         "local"
                     ],
                     "enumItemLabels": [
@@ -84,6 +85,7 @@
                         "Herd",
                         "Valet",
                         "Sail",
+                        "Lando",
                         "Local"
                     ],
                     "markdownEnumDescriptions": [
@@ -91,6 +93,7 @@
                         "Auto detect PHP version Herd is using for the project.",
                         "Auto detect PHP version Valet is using for the project.",
                         "Sail",
+                        "Lando",
                         "Use PHP installed on the local machine."
                     ],
                     "default": "auto",
@@ -109,6 +112,11 @@
                     "type": "boolean",
                     "default": true,
                     "description": "Show popups for errors."
+                },
+                "Laravel.blade.autoSpaceTags": {
+                    "type": "boolean",
+                    "default": true,
+                    "description": "Automatically add spacing around Blade echo and comment tags."
                 },
                 "Laravel.appBinding.diagnostics": {
                     "type": "boolean",
