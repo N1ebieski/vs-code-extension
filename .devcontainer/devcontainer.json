@@ -22,7 +22,6 @@
                 "redhat.vscode-yaml",
                 "xdebug.php-debug",
                 "sanderronde.phpstan-vscode",
-                "esbenp.prettier-vscode",
                 "ms-vscode.test-adapter-converter",
                 "hbenl.vscode-test-explorer",
                 "Codeium.codeium",
