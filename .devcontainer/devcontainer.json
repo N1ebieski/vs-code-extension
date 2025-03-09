@@ -1,0 +1,32 @@
+{
+    "name": "Laradock VscodeLaravel",
+    "dockerComposeFile": "../../laradock-vscode-laravel/docker-compose.yml",
+    "remoteUser": "laradock",
+    "service": "workspace",
+    "workspaceFolder": "/var/www/vscode-laravel",
+    "shutdownAction": "stopCompose",
+    "postCreateCommand": "uname -a",
+    "customizations": {
+        "vscode": {
+            "extensions": [
+                "austenc.laravel-blade-spacer",
+                "bmewburn.vscode-intelephense-client",
+                "dbaeumer.vscode-eslint",
+                "eamodio.gitlens",
+                "GitHub.vscode-pull-request-github",
+                "MehediDracula.php-namespace-resolver",
+                "recca0120.vscode-phpunit",
+                "redhat.vscode-yaml",
+                "xdebug.php-debug",
+                "sanderronde.phpstan-vscode",
+                "esbenp.prettier-vscode",
+                "ms-vscode.test-adapter-converter",
+                "hbenl.vscode-test-explorer",
+                "Codeium.codeium",
+                "open-southeners.laravel-pint",
+                "github.vscode-github-actions",
+                "EditorConfig.EditorConfig"
+            ]
+        }
+    }
+}
