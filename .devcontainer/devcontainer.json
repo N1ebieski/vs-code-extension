@@ -2,8 +2,11 @@
     "name": "Laradock VscodeLaravel",
     "dockerComposeFile": "../../laradock-vscode-laravel/docker-compose.yml",
     "remoteUser": "laradock",
+    "runServices": [
+        "workspace"
+    ],
     "service": "workspace",
-    "workspaceFolder": "/var/www/vscode-laravel",
+    "workspaceFolder": "/var/www/vs-code-extension",
     "shutdownAction": "stopCompose",
     "postCreateCommand": "uname -a",
     "customizations": {
@@ -25,7 +28,9 @@
                 "Codeium.codeium",
                 "open-southeners.laravel-pint",
                 "github.vscode-github-actions",
-                "EditorConfig.EditorConfig"
+                "EditorConfig.EditorConfig",
+                "ms-vscode.extension-test-runner",
+                "connor4312.esbuild-problem-matchers"
             ]
         }
     }

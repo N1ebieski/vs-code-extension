@@ -1,12 +1,11 @@
 {
 	"folders": [
 		{
-			"name": "vscode-laravel",
+			"name": "vs-code-extension",
 			"path": ".."
 		},
 		{
-			"name": "php-parser",
-			"path": "../php-parser"
+			"path": "../../vs-code-php-parser-cli"
 		}
 	],
 	"settings": {
