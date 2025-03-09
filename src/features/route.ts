@@ -15,18 +15,18 @@ import { FeatureTag, HoverProvider, LinkProvider } from "..";
 const toFind: FeatureTag = [
     { method: ["route", "signedRoute", "to_route"] },
     {
+        class: [...facade("Redirect"), ...facade("URL"), "redirect", "url"],
+        method: ["route", "signedRoute", "temporarySignedRoute"],
+    },
+    {
         class: [contract("Routing\\UrlGenerator")],
         method: ["route", "signedRoute", "temporarySignedRoute"],
         argumentIndex: 0,
     },
     {
-        class: [contract("Routing\\ResponseFactory")],
+        class: [contract("Routing\\ResponseFactory"), ...facade("Response")],
         method: "redirectToRoute",
-        argumentIndex: 0,        
-    },
-    {
-        class: [...facade("Redirect"), ...facade("URL"), "redirect", "url"],
-        method: ["route", "signedRoute", "temporarySignedRoute"],
+        argumentIndex: 0,
     },
     {
         class: ["Livewire\\Volt\\Volt"],
@@ -82,14 +82,14 @@ export const linkProvider: LinkProvider = (doc: vscode.TextDocument) => {
                 (route) => route.name === param.value,
             );
 
-            if (!route || !route.filename || !route.line) {
+            if (!route || !route.filename) {
                 return null;
             }
 
             return new vscode.DocumentLink(
                 detectedRange(param),
                 vscode.Uri.file(route.filename).with({
-                    fragment: `L${route.line}`,
+                    fragment: `L${route.line ?? 0}`,
                 }),
             );
         },

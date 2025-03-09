@@ -6,6 +6,14 @@ All notable changes to the Laravel extension will be documented in this file.
 
 - Nothing yet
 
+## [v1.0.3]
+
+- Basic Folio support ([#319](https://github.com/laravel/vs-code-extension/pull/319))
+- Add link to Blade file for MailMessage::markdown/view ([#317](https://github.com/laravel/vs-code-extension/pull/317))
+- Fix TypeError: Cannot read properties of undefined (reading 'type') ([#296](https://github.com/laravel/vs-code-extension/pull/296))
+- Support for contracts ([#298](https://github.com/laravel/vs-code-extension/pull/298))
+- Option to disable model doc block generation + fix doc block extends ([#320](https://github.com/laravel/vs-code-extension/pull/320))
+
 ## [v1.0.2]
 
 - Fix fetching Blade component properties when constructor is missing ([#307](https://github.com/laravel/vs-code-extension/pull/307))
