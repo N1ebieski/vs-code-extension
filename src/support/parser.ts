@@ -36,7 +36,7 @@ export const setParserBinaryPath = (context: vscode.ExtensionContext) => {
 };
 
 const downloadBinary = async (context: vscode.ExtensionContext) => {
-    const binaryVersion = "0.1.42+intelekt.1";
+    const binaryVersion = "0.1.42+intelekt.2";
     const osPlatform = os.platform();
     const osArch = os.arch();
     const extension = osPlatform === "win32" ? ".exe" : "";
@@ -177,7 +177,7 @@ const runCommand = (command: string): Promise<string> => {
         const extraArgs = os.platform() === "win32" ? "--from-file" : "";
         const toRun = `"${parserBinaryPath}" ${command} ${extraArgs}`;
 
-        // console.log("running command", toRun);
+        console.log("running command", toRun);
 
         cp.exec(
             toRun,
