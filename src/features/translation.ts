@@ -10,7 +10,7 @@ import { findHoverMatchesInDoc } from "@src/support/doc";
 import { detectedRange, detectInDoc } from "@src/support/parser";
 import { wordMatchRegex } from "@src/support/patterns";
 import { relativePath } from "@src/support/project";
-import { contract, facade } from "@src/support/util";
+import { contract, createIndexMapping, facade } from "@src/support/util";
 import { AutocompleteParsingResult } from "@src/types";
 import * as vscode from "vscode";
 import { FeatureTag, HoverProvider, LinkProvider } from "..";
@@ -19,31 +19,97 @@ const toFind: FeatureTag = [
     {
         class: [contract("Translation\\Translator")],
         method: ["get", "choice"],
-        argumentIndex: 0,        
-    },    
+    },
     {
         class: facade("Lang"),
-        method: ["has", "hasForLocale", "get", "getForLocale", "choice"],
-        argumentIndex: [0, 1],
+        method: ["has", "hasForLocale", "get", "choice"],
     },
     {
         method: ["__", "trans", "trans_choice", "@lang"],
-        argumentIndex: [0, 1],
     },
 ];
 
-const getLang = (item: AutocompleteParsingResult.MethodCall): string | undefined => {
-    const locale = (item.arguments.children as AutocompleteParsingResult.Argument[]).find(
-        (arg) => arg.name === "locale",
+type ArgIndexMap = Record<string, Record<string, number>>;
+
+const paramArgIndexes = createIndexMapping([
+    [
+        contract("Translation\\Translator"),
+        {
+            get: 1,
+            choice: 2,
+        },
+    ],
+    [
+        "",
+        {
+            __: 1,
+            trans: 1,
+            "@lang": 1,
+            trans_choice: 2,
+        },
+    ],
+    [
+        facade("Lang"),
+        {
+            get: 1,
+            choice: 2,
+        },
+    ],
+]);
+
+const localeArgIndexes = createIndexMapping([
+    [
+        contract("Translation\\Translator"),
+        {
+            get: 2,
+            choice: 3,
+        },
+    ],
+    [
+        "",
+        {
+            __: 2,
+            trans: 2,
+            "@lang": 2,
+            trans_choice: 3,
+        },
+    ],
+    [
+        facade("Lang"),
+        {
+            has: 1,
+            hasForLocale: 1,
+            get: 2,
+            choice: 3,
+        },
+    ],
+]);
+
+const getLang = (
+    item: AutocompleteParsingResult.MethodCall,
+): string | undefined => {
+    const localeArgIndex = localeArgIndexes.get(
+        item.className,
+        item.methodName,
     );
 
-    return locale?.children.length ? 
-        (locale.children as AutocompleteParsingResult.StringValue[])[0].value : undefined;
+    const locale = (
+        item.arguments.children as AutocompleteParsingResult.Argument[]
+    ).find((arg, i) => arg.name === "locale" || i === localeArgIndex);
+
+    return locale?.children.length
+        ? (locale.children as AutocompleteParsingResult.StringValue[])[0].value
+        : undefined;
 };
 
-const getTranslationItemByLang = (translation: TranslationItem, lang?: string) => {
-    return translation[lang ?? getTranslations().items.default] 
-        ?? translation[Object.keys(translation)[0]];
+const getTranslationItemByLang = (
+    translation: TranslationItem,
+    lang?: string,
+) => {
+    return (
+        translation[lang ?? getTranslations().items.default] ??
+        translation[Object.keys(translation)[0]]
+    );
 };
 
 const getNestedTranslationItem = (match: string): NestedTranslationItem | undefined => {
@@ -89,8 +155,8 @@ export const linkProvider: LinkProvider = (doc: vscode.TextDocument) => {
             }
 
             const def = getTranslationItemByLang(
-                translationItem, 
-                getLang(item as AutocompleteParsingResult.MethodCall)
+                translationItem,
+                getLang(item as AutocompleteParsingResult.MethodCall),
             );
 
             return new vscode.DocumentLink(
@@ -174,8 +240,40 @@ export const completionProvider = {
         token: vscode.CancellationToken,
         context: vscode.CompletionContext,
     ): vscode.CompletionItem[] {
-        if (result.isParamIndex(1)) {
+        const localeArgIndex = localeArgIndexes.get(
+            result.class(),
+            result.func(),
+        );
+        const paramArgIndex = paramArgIndexes.get(
+            result.class(),
+            result.func(),
+        );
+
+        if (result.isParamIndex(paramArgIndex ?? -1)) {
             return this.getParameterCompletionItems(result, document, position);
+        }
+
+        if (
+            result.isParamIndex(localeArgIndex ?? -1) ||
+            result.isArgumentNamed("locale")
+        ) {
+            return getTranslations().items.languages.map((lang) => {
+                let completionItem = new vscode.CompletionItem(
+                    lang,
+                    vscode.CompletionItemKind.Value,
+                );
+
+                completionItem.range = document.getWordRangeAtPosition(
+                    position,
+                    wordMatchRegex,
+                );
+
+                return completionItem;
+            });
+        }
+
+        if (!result.isParamIndex(0)) {
+            return [];
         }
 
         const totalTranslationItems = Object.entries(
@@ -197,7 +295,8 @@ export const completionProvider = {
                 if (totalTranslationItems < 200) {
                     // This will bomb if we have too many translations,
                     // 200 is an arbitrary but probably safe number
-                    completionItem.detail = getTranslationItemByLang(translations).value;
+                    completionItem.detail =
+                        getTranslationItemByLang(translations).value;
                 }
 
                 return completionItem;
