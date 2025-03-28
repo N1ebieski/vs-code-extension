@@ -1,3 +1,7 @@
+## [List of my pull requests](https://github.com/laravel/vs-code-extension/issues?q=is%3Apr%20author%3A%40me%20)
+
+------------
+
 # Official Laravel VS Code Extension
 
 Below you'll find a list of features as well as a roadmap with features we will be integrating soon.
