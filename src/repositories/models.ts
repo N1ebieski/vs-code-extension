@@ -32,9 +32,9 @@ export const getModelByName = (name: string): Eloquent.Model | undefined => {
         }
 
         return [
-            modelName, 
-            modelName.toLowerCase(), 
-            camel(modelName), 
+            modelName,
+            modelName.toLowerCase(),
+            camel(modelName),
             snake(modelName)
         ].includes(name);
     });
