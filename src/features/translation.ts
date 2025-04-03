@@ -22,7 +22,7 @@ const toFind: FeatureTag = [
     },
     {
         class: facade("Lang"),
-        method: ["has", "hasForLocale", "get", "choice"],
+        method: ["has", "hasForLocale", "get", "choice", "string"],
     },
     {
         method: ["__", "trans", "trans_choice", "@lang"],
