@@ -17,7 +17,7 @@ import { FeatureTag, HoverProvider, LinkProvider } from "..";
 
 const toFind: FeatureTag = [
     {
-        class: [contract("Translation\\Translator")],
+        class: contract("Translation\\Translator"),
         method: ["get", "choice"],
     },
     {
@@ -149,7 +149,7 @@ export const linkProvider: LinkProvider = (doc: vscode.TextDocument) => {
             }
 
             const translationItem = getTranslationItem(param.value)?.translationItem;
-    
+
             if (!translationItem) {
                 return null;
             }

@@ -29,12 +29,23 @@ export const toArray = <T>(value: T | T[]): T[] => {
     return Array.isArray(value) ? value : [value];
 };
 
-export const contract = (className: string): string => {
-    return `Illuminate\\Contracts\\${className}`;
+export const contract = (className: string): string[] => {
+    return [
+        `Illuminate\\Contracts\\${className}`,
+        override(`Illuminate\\Contracts\\${className}`),
+    ];
 };
 
 export const facade = (className: string): string[] => {
-    return [className, support(`Facades\\${className}`)];
+    return [
+        className,
+        support(`Facades\\${className}`),
+        override(support(`Facades\\${className}`))
+    ];
+};
+
+export const override = (className: string): string => {
+    return `App\\Overrides\\${className}`;
 };
 
 export const support = (className: string): string => {

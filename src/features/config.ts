@@ -19,7 +19,7 @@ import {
 const toFind: FeatureTag = [
     { method: "config", argumentIndex: 0 },
     {
-        class: [contract("Config\\Repository")],
+        class: contract("Config\\Repository"),
         method: ["get", "prepend", "push"],
         argumentIndex: 0,
     },
