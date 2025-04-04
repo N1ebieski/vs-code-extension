@@ -125,7 +125,10 @@ export default class Validation implements CompletionProvider {
             {
                 classExtends: [
                     "Illuminate\\Foundation\\Http\\FormRequest",
+                    "App\\Http\\Requests\\Request",
                     "Livewire\\Form",
+                    "App\\Livewire\\Forms\\Form",
+                    "App\\Data\\Data\\Data"
                 ],
                 methodDefinition: "rules",
             },
