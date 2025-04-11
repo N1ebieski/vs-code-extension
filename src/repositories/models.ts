@@ -1,4 +1,3 @@
-import { camel, snake } from "@src/support/str";
 import { repository } from ".";
 import { Eloquent } from "..";
 import { writeEloquentDocBlocks } from "../support/docblocks";
@@ -24,19 +23,8 @@ const load = () => {
 };
 
 export const getModelByName = (name: string): Eloquent.Model | undefined => {
-    const model = Object.entries(getModels().items).find(([key]) => {
-        const modelName = key.split("\\").pop();
-
-        if (!modelName) {
-            return undefined;
-        }
-
-        return [
-            modelName,
-            modelName.toLowerCase(),
-            camel(modelName),
-            snake(modelName)
-        ].includes(name);
+    const model = Object.entries(getModels().items).find(([, value]) => {
+        return value.name_cases.includes(name);
     });
 
     return model?.[1];
