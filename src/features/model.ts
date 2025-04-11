@@ -1,7 +1,6 @@
 import AutocompleteResult from "@src/parser/AutocompleteResult";
 import { getModelByName, getModels } from "@src/repositories/models";
 import { config } from "@src/support/config";
-import { camel, snake } from "@src/support/str";
 import * as vscode from "vscode";
 import {
     CompletionProvider,
@@ -9,28 +8,29 @@ import {
     FeatureTag,
 } from "..";
 
-export const completionProvider: CompletionProvider = {
+export const completionModelProvider: vscode.CompletionItemProvider = {
+    provideCompletionItems(): vscode.ProviderResult<vscode.CompletionItem[]> {
+        if (!config("model.completion_model", true)) {
+            return undefined;
+        }
+
+        return Object.entries(getModels().items).flatMap(([, value]) => {
+            return value.name_cases.slice(0, 2).map((name) => {
+                return new vscode.CompletionItem(name, vscode.CompletionItemKind.Variable);
+            });
+        });
+    },
+};
+
+export const completionPropertyProvider: CompletionProvider = {
     tags() {
         return Object.values(getModels().items).flatMap(model => {
-            const modelName = model.class.split("\\").pop();
-
-            if (!modelName) {
-                return null;
-            }
-
-            const modelNames = [
-                modelName,
-                modelName.toLowerCase(),
-                camel(modelName),
-                snake(modelName)
-            ];
-
             return [
                 {
-                    method: [...modelNames],
+                    method: [...model.name_cases],
                 },
                 {
-                    name: [...modelNames]
+                    name: [...model.name_cases]
                 }
             ];
         }).filter(item => item !== null) as FeatureTag;
@@ -39,7 +39,7 @@ export const completionProvider: CompletionProvider = {
     provideCompletionItems(
         result: AutocompleteResult,
     ): vscode.CompletionItem[] {
-        if (!config("model.completion", true)) {
+        if (!config("model.completion_property", true)) {
             return [];
         }
 
