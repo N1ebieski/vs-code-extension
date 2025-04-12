@@ -332,7 +332,7 @@
                     "generated": true,
                     "description": "Enable hover information for Livewire components."
                 },
-                "Laravel.livewireComponent.completion_component": {
+                "Laravel.livewireComponent.completion": {
                     "type": "boolean",
                     "default": true,
                     "generated": true,
@@ -396,13 +396,13 @@
                     "type": "boolean",
                     "default": true,
                     "generated": true,
-                    "description": null
+                    "description": "Enable completion for model attributes."
                 },
-                "Laravel.model.completion_model": {
+                "Laravel.model.completion": {
                     "type": "boolean",
                     "default": true,
                     "generated": true,
-                    "description": null
+                    "description": "Enable completion for model."
                 },
                 "Laravel.paths.link": {
                     "type": "boolean",
