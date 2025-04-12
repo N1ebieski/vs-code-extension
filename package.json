@@ -326,6 +326,12 @@
                     "generated": true,
                     "description": "Enable linking for Livewire components."
                 },
+                "Laravel.livewireComponent.hover": {
+                    "type": "boolean",
+                    "default": true,
+                    "generated": true,
+                    "description": "Enable hover information for Livewire components."
+                },
                 "Laravel.livewireComponent.completion_component": {
                     "type": "boolean",
                     "default": true,
@@ -337,12 +343,6 @@
                     "default": true,
                     "generated": true,
                     "description": null
-                },
-                "Laravel.livewireComponent.hover": {
-                    "type": "boolean",
-                    "default": true,
-                    "generated": true,
-                    "description": "Enable hover information for Livewire components."
                 },
                 "Laravel.middleware.diagnostics": {
                     "type": "boolean",
