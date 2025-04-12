@@ -14,9 +14,15 @@ import EloquentCompletion from "./completion/Eloquent";
 import Registry from "./completion/Registry";
 import ValidationCompletion from "./completion/Validation";
 import { updateDiagnostics } from "./diagnostic/diagnostic";
-import { completionProvider as bladeComponentCompletion } from "./features/bladeComponent";
+import {
+    completionAttributeProvider as bladeComponentAttributeCompletion,
+    completionComponentProvider as bladeComponentCompletion
+} from "./features/bladeComponent";
 import { viteEnvCodeActionProvider } from "./features/env";
-import { completionProvider as livewireComponentCompletion } from "./features/livewireComponent";
+import {
+    completionAttributeProvider as livewireComponentAttributeCompletion,
+    completionComponentProvider as livewireComponentCompletion
+} from "./features/livewireComponent";
 import { completionModelProvider, completionPropertyProvider } from "./features/model";
 import { hoverProviders } from "./hover/HoverProvider";
 import { linkProviders } from "./link/LinkProvider";
@@ -142,7 +148,17 @@ export function activate(context: vscode.ExtensionContext) {
         ),
         vscode.languages.registerCompletionItemProvider(
             BLADE_LANGUAGES,
+            bladeComponentAttributeCompletion,
+            ":",
+        ),
+        vscode.languages.registerCompletionItemProvider(
+            BLADE_LANGUAGES,
             livewireComponentCompletion,
+            ":",
+        ),
+        vscode.languages.registerCompletionItemProvider(
+            BLADE_LANGUAGES,
+            livewireComponentAttributeCompletion,
             ":",
         ),
         vscode.languages.registerCompletionItemProvider(
