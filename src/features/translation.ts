@@ -129,7 +129,7 @@ const getTranslationItem = (match: string): NestedTranslationItem | undefined =>
     const translations = getTranslations().items.translations;
 
     // First, try to find exact match
-    const translationItem = translations[match];
+    const translationItem = translations[match.replaceAll('\\', '')];
 
     // If we can't find exact match, try to find a first nested element
     return translationItem ? {
