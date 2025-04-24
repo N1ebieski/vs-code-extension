@@ -1,6 +1,7 @@
 import { notFound } from "@src/diagnostic";
 import AutocompleteResult from "@src/parser/AutocompleteResult";
 import {
+    getTranslationItemByName,
     getTranslations,
     NestedTranslationItem,
     TranslationItem,
@@ -126,10 +127,8 @@ const getNestedTranslationItem = (match: string): NestedTranslationItem | undefi
 };
 
 const getTranslationItem = (match: string): NestedTranslationItem | undefined => {
-    const translations = getTranslations().items.translations;
-
     // First, try to find exact match
-    const translationItem = translations[match.replaceAll('\\', '')];
+    const translationItem = getTranslationItemByName(match);
 
     // If we can't find exact match, try to find a first nested element
     return translationItem ? {
