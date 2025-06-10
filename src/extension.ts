@@ -33,8 +33,12 @@ import {
     watchForComposerChanges,
 } from "./support/fileWatcher";
 import { info } from "./support/logger";
-import { setParserBinaryPath } from "./support/parser";
-import { clearDefaultPhpCommand, initVendorWatchers } from "./support/php";
+import { clearParserCaches, setParserBinaryPath } from "./support/parser";
+import {
+    clearDefaultPhpCommand,
+    clearPhpFileCache,
+    initVendorWatchers,
+} from "./support/php";
 import { hasWorkspace, projectPathExists } from "./support/project";
 import { cleanUpTemp } from "./support/util";
 
@@ -212,6 +216,8 @@ export function deactivate() {
     }
 
     disposeWatchers();
+    clearParserCaches();
+    clearPhpFileCache();
 
     if (client) {
         client.stop();
