@@ -71,7 +71,7 @@ export async function activate(context: vscode.ExtensionContext) {
         { viteEnvCodeActionProvider },
         { hoverProviders },
         { linkProviders },
-        { completionModelProvider, completionAttributeProvider }
+        { completionAttributeProvider, completionModelProvider },
     ] = await Promise.all([
         import("./completion/Registry.js"),
         import("./completion/CompletionProvider.js"),
