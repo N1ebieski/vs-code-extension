@@ -117,11 +117,11 @@ const getNestedTranslationItem = (match: string): NestedTranslationItem | undefi
     const translations = getTranslations().items.translations;
 
     const firstNestedMatch = Object.keys(translations).find(
-        key => key.startsWith(match + '.')
+        key => key.startsWith(match.replaceAll('\\', '') + '.')
     );
 
     return firstNestedMatch ? {
-        translationItem: translations[firstNestedMatch],
+        translationItem: getTranslationItemByName(firstNestedMatch),
         isNested: true
     } as NestedTranslationItem : undefined;
 };
