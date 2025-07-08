@@ -123,7 +123,7 @@ export const completionComponentProvider: vscode.CompletionItemProvider = {
                 pos.character,
             );
 
-            return linePrefix !== prefix;
+            return linePrefix === prefix;
         });
 
         if (!match) {
