@@ -68,8 +68,13 @@
                 "title": "with str(...)"
             },
             {
-                "command": "laravel.refactorClass",
-                "title": "Laravel: Refactor class attribute"
+                "command": "laravel.refactorSelectedClass",
+                "title": "Laravel: Refactor selected class attribute"
+            },
+            {
+                "command": "laravel.refactorAllClasses",
+                "title": "Laravel: Refactor all class attributes"
+            }
             }
         ],
         "keybindings": [
@@ -84,7 +89,7 @@
                 "when": "editorTextFocus && editorHasSelection"
             },
             {
-                "command": "laravel.refactorClass",
+                "command": "laravel.refactorSelectedClass",
                 "key": "shift+alt+c",
                 "when": "editorHasSelection && resourceLangId == blade"
             }
@@ -122,8 +127,13 @@
                     "when": "false"
                 },
                 {
-                    "command": "laravel.refactorClass",
+                    "command": "laravel.refactorSelectedClass",
                     "when": "editorHasSelection && resourceLangId == blade",
+                    "group": "laravel"
+                },
+                {
+                    "command": "laravel.refactorAllClasses",
+                    "when": "resourceLangId == blade",
                     "group": "laravel"
                 }
             ], 
@@ -139,8 +149,13 @@
                     "group": "laravel"
                 },
                 {
-                    "command": "laravel.refactorClass",
+                    "command": "laravel.refactorSelectedClass",
                     "when": "editorHasSelection && resourceLangId == blade",
+                    "group": "laravel"
+                },
+                {
+                    "command": "laravel.refactorAllClasses",
+                    "when": "resourceLangId == blade",
                     "group": "laravel"
                 }
             ],

@@ -7,7 +7,7 @@ import { LanguageClient } from "vscode-languageclient/node";
 import { bladeSpacer } from "./blade/bladeSpacer";
 import { initClient } from "./blade/client";
 import { openFileCommand } from "./commands";
-import { refactorClassCommand } from "./commands/refactorClass";
+import { refactorAllClassesCommand, refactorSelectedClassCommand } from "./commands/refactorClass";
 import { helpers, openSubmenu, unwrapSelection, wrapSelection } from "./commands/wrapHelpers";
 import { configAffected } from "./support/config";
 import { collectDebugInfo } from "./support/debug";
@@ -223,7 +223,8 @@ export async function activate(context: vscode.ExtensionContext) {
         ...helpers.map((helper: string) => {
             return vscode.commands.registerCommand(`laravel.wrapHelpers.${helper}`, () => wrapSelection(helper));
         }),
-        vscode.commands.registerCommand("laravel.refactorClass", refactorClassCommand),
+        vscode.commands.registerCommand("laravel.refactorSelectedClass", refactorSelectedClassCommand),
+        vscode.commands.registerCommand("laravel.refactorAllClasses", refactorAllClassesCommand),
     );
 
     collectDebugInfo();
