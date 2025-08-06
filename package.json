@@ -80,12 +80,12 @@
             {
                 "command": "laravel.wrapHelpers.dd",
                 "key": "shift+alt+d",
-                "when": "editorTextFocus && editorHasSelection"
+                "when": "editorHasSelection"
             },
             {
                 "command": "laravel.wrapHelpers.unwrap",
                 "key": "shift+alt+u",
-                "when": "editorTextFocus && editorHasSelection"
+                "when": "editorHasSelection"
             },
             {
                 "command": "laravel.refactorSelectedClass",
