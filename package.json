@@ -75,7 +75,6 @@
                 "command": "laravel.refactorAllClasses",
                 "title": "Laravel: Refactor all class attributes"
             }
-            }
         ],
         "keybindings": [
             {
