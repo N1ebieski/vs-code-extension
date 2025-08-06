@@ -135,7 +135,7 @@
                     "when": "resourceLangId == blade",
                     "group": "laravel"
                 }
-            ], 
+            ],
             "editor/context": [
                 {
                     "submenu": "laravel.wrapHelpers.submenu",
@@ -171,8 +171,8 @@
                 {
                     "command": "laravel.wrapHelpers.str"
                 }
-            ]            
-        }, 
+            ]
+        },
         "languages": [
             {
                 "id": "blade",
