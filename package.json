@@ -66,6 +66,10 @@
             {
                 "command": "laravel.wrapHelpers.str",
                 "title": "with str(...)"
+            },
+            {
+                "command": "laravel.refactorClass",
+                "title": "Laravel: Refactor class attribute"
             }
         ],
         "keybindings": [
@@ -78,6 +82,11 @@
                 "command": "laravel.wrapHelpers.unwrap",
                 "key": "shift+alt+u",
                 "when": "editorTextFocus && editorHasSelection"
+            },
+            {
+                "command": "laravel.refactorClass",
+                "key": "shift+alt+c",
+                "when": "editorHasSelection && resourceLangId == blade"
             }
         ],
         "submenus": [
@@ -111,6 +120,11 @@
                 {
                     "command": "laravel.wrapHelpers.str",
                     "when": "false"
+                },
+                {
+                    "command": "laravel.refactorClass",
+                    "when": "editorHasSelection && resourceLangId == blade",
+                    "group": "laravel"
                 }
             ], 
             "editor/context": [
@@ -122,6 +136,11 @@
                 {
                     "command": "laravel.wrapHelpers.unwrap",
                     "when": "editorHasSelection",
+                    "group": "laravel"
+                },
+                {
+                    "command": "laravel.refactorClass",
+                    "when": "editorHasSelection && resourceLangId == blade",
                     "group": "laravel"
                 }
             ],
