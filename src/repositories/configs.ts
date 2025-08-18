@@ -14,11 +14,15 @@ export const getConfigByName = (name: string): Config | undefined => {
 export const getConfigPathByName = (match: string): string | undefined => {
     const filePath = match.replace(/\.[^.]+$/, '');
 
-    return [filePath, filePath.replaceAll('.', '/')].find((filePath) => {
-        return getConfigs().items.paths.find((path) => {
-            return !path.startsWith('vendor/') && path.endsWith(`${filePath}.php`);
+    for (const tryPath of [filePath.replaceAll('.', '/'), filePath.replace(/^([^.]+)\..*$/, '$1')]) {
+        const configPath = getConfigs().items.paths.find((path) => {
+            return !path.startsWith('vendor/') && path.endsWith(`${tryPath}.php`);
         });
-    });
+
+        if (configPath) {
+            return configPath;
+        }
+    }
 };
 
 export const getConfigs = repository<ConfigGroupResult>({
