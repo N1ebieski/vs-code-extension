@@ -24,10 +24,7 @@ const toFind: FeatureTag = [
         argumentIndex: 0,
     },
     {
-        class: [
-            ...contract("Routing\\ResponseFactory"),
-            ...facade("Response")
-        ],
+        class: [...contract("Routing\\ResponseFactory"), ...facade("Response")],
         method: "redirectToRoute",
         argumentIndex: 0,
     },

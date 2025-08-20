@@ -52,7 +52,9 @@ export const completionAttributeProvider: vscode.CompletionItemProvider = {
         }
 
         const components = getLivewireComponents().items;
-        const text = doc.getText(new vscode.Range(new vscode.Position(0, 0), pos));
+        const text = doc.getText(
+            new vscode.Range(new vscode.Position(0, 0), pos),
+        );
 
         const regex = new RegExp(/<livewire:([^\s>]+)[^<]*:$/);
 
@@ -78,7 +80,7 @@ export const completionAttributeProvider: vscode.CompletionItemProvider = {
 
             return completeItem;
         });
-    }
+    },
 };
 
 export const completionComponentProvider: vscode.CompletionItemProvider = {

@@ -114,28 +114,36 @@ const getTranslationItemByLang = (
     );
 };
 
-const getNestedTranslationItem = (match: string): NestedTranslationItem | undefined => {
+const getNestedTranslationItem = (
+    match: string,
+): NestedTranslationItem | undefined => {
     const translations = getTranslations().items.translations;
 
-    const firstNestedMatch = Object.keys(translations).find(
-        key => key.startsWith(match.replaceAll('\\', '') + '.')
+    const firstNestedMatch = Object.keys(translations).find((key) =>
+        key.startsWith(match.replaceAll("\\", "") + "."),
     );
 
-    return firstNestedMatch ? {
-        translationItem: getTranslationItemByName(firstNestedMatch),
-        isNested: true
-    } as NestedTranslationItem : undefined;
+    return firstNestedMatch
+        ? ({
+              translationItem: getTranslationItemByName(firstNestedMatch),
+              isNested: true,
+          } as NestedTranslationItem)
+        : undefined;
 };
 
-const getTranslationItem = (match: string): NestedTranslationItem | undefined => {
+const getTranslationItem = (
+    match: string,
+): NestedTranslationItem | undefined => {
     // First, try to find exact match
     const translationItem = getTranslationItemByName(match);
 
     // If we can't find exact match, try to find a first nested element
-    return translationItem ? {
-        translationItem: translationItem,
-        isNested: false
-    } as NestedTranslationItem : getNestedTranslationItem(match);
+    return translationItem
+        ? ({
+              translationItem: translationItem,
+              isNested: false,
+          } as NestedTranslationItem)
+        : getNestedTranslationItem(match);
 };
 
 export const linkProvider: LinkProvider = (doc: vscode.TextDocument) => {
@@ -148,7 +156,9 @@ export const linkProvider: LinkProvider = (doc: vscode.TextDocument) => {
                 return null;
             }
 
-            const translationItem = getTranslationItem(param.value)?.translationItem;
+            const translationItem = getTranslationItem(
+                param.value,
+            )?.translationItem;
 
             if (!translationItem) {
                 return null;
@@ -184,9 +194,9 @@ export const hoverProvider: HoverProvider = (
             .filter(([key]) => key !== "default")
             .map(([key, translation]) => {
                 return [
-                    ...(!translationItem.isNested ? [
-                        `\`${key}\`: ${translation.value}`
-                    ] : []),
+                    ...(!translationItem.isNested
+                        ? [`\`${key}\`: ${translation.value}`]
+                        : []),
                     `[${relativePath(translation.path)}](${vscode.Uri.file(
                         translation.path,
                     ).with({
@@ -212,7 +222,9 @@ export const diagnosticProvider = (
                 return null;
             }
 
-            const translationItem = getTranslationItem(param.value)?.translationItem;
+            const translationItem = getTranslationItem(
+                param.value,
+            )?.translationItem;
 
             if (translationItem) {
                 return null;

@@ -128,7 +128,7 @@ export class Validation implements CompletionProvider {
                     "App\\Http\\Requests\\Request",
                     "Livewire\\Form",
                     "App\\Livewire\\Forms\\Form",
-                    "App\\Data\\Data\\Data"
+                    "App\\Data\\Data\\Data",
                 ],
                 methodDefinition: "rules",
             },

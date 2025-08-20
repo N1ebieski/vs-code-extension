@@ -40,7 +40,7 @@ export const facade = (className: string): string[] => {
     return [
         className,
         support(`Facades\\${className}`),
-        override(support(`Facades\\${className}`))
+        override(support(`Facades\\${className}`)),
     ];
 };
 
