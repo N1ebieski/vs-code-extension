@@ -73,9 +73,9 @@ export const getConfigPathByName = (match: string): ConfigPath | undefined => {
 
     return path
         ? {
-            path: projectPath(path),
-            line: parentItem?.line,
-        }
+              path: projectPath(path),
+              line: parentItem?.line,
+          }
         : undefined;
 };
 
