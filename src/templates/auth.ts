@@ -81,23 +81,23 @@ if (!\\Illuminate\\Support\\Facades\\App::bound('auth')) {
                                     }
                                 }
                             }
-                        }
 
-                        return [
-                            'key' => $key,
-                            'uri' => $reflection->getFileName(),
-                            'policy' => $policyClass,
-                            'line' => $reflection->getStartLine(),
-                        ];
-                    })
-                    ->merge(
-                        collect(\\Illuminate\\Support\\Facades\\Gate::policies())->flatMap(fn($policy, $model) => vsCodeGetPolicyInfo($policy, $model)),
-                    )
-                    ->merge(
-                        $modelPolicies->flatMap(fn($policy, $model) => vsCodeGetPolicyInfo($policy, $model)),
-                    )
-                    ->values()
-                    ->groupBy('key')
-                    ->map(fn($item) => $item->map(fn($i) => \\Illuminate\\Support\\Arr::except($i, 'key'))),
-]);
+                            return [
+                                'key' => $key,
+                                'uri' => $reflection->getFileName(),
+                                'policy' => $policyClass,
+                                'line' => $reflection->getStartLine(),
+                            ];
+                        })
+                        ->merge(
+                            collect(\\Illuminate\\Support\\Facades\\Gate::policies())->flatMap(fn($policy, $model) => vsCodeGetPolicyInfo($policy, $model)),
+                        )
+                        ->merge(
+                            $modelPolicies->flatMap(fn($policy, $model) => vsCodeGetPolicyInfo($policy, $model)),
+                        )
+                        ->values()
+                        ->groupBy('key')
+                        ->map(fn($item) => $item->map(fn($i) => \\Illuminate\\Support\\Arr::except($i, 'key'))),
+    ]);
+}
 `;
