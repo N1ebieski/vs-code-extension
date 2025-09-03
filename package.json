@@ -47,7 +47,17 @@
                 "command": "laravel.refactorSelectedClass",
                 "key": "shift+alt+c",
                 "when": "editorHasSelection && resourceLangId == blade"
-            }
+            },
+            {
+                "command": "laravel.wrapHelpers.dd",
+                "key": "shift+alt+d",
+                "when": "editorHasSelection"
+            },
+            {
+                "command": "laravel.wrapHelpers.unwrap",
+                "key": "shift+alt+u",
+                "when": "editorHasSelection"
+            }            
         ],
         "submenus": [
             {
