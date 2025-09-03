@@ -257,6 +257,20 @@ export async function activate(context: vscode.ExtensionContext) {
             "laravel.refactorAllClasses",
             refactorAllClassesCommand,
         ),
+        vscode.commands.registerCommand(
+            "laravel.wrapHelpers",
+            openSubmenuCommand,
+        ),
+        vscode.commands.registerCommand(
+            "laravel.wrapHelpers.unwrap",
+            unwrapSelectionCommand,
+        ),
+        ...helpers.map((helper: string) => {
+            return vscode.commands.registerCommand(
+                `laravel.wrapHelpers.${helper}`,
+                () => wrapSelectionCommand(helper),
+            );
+        }),
     );
 
     collectDebugInfo();
