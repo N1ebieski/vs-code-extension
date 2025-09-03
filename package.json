@@ -3,7 +3,7 @@
     "publisher": "laravel",
     "displayName": "Laravel",
     "description": "Official VS Code extension for Laravel",
-    "version": "1.0.14",
+    "version": "1.1.1",
     "engines": {
         "vscode": "^1.89.0"
     },
@@ -202,6 +202,23 @@
                     "source.css": "css",
                     "source.js": "javascript"
                 }
+            }
+        ],
+        "commands": [
+            {
+                "command": "laravel.runPint",
+                "title": "Run Pint",
+                "category": "Laravel"
+            },
+            {
+                "command": "laravel.runPintOnDirtyFiles",
+                "title": "Run Pint on Dirty Files",
+                "category": "Laravel"
+            },
+            {
+                "command": "laravel.runPintOnCurrentFile",
+                "title": "Run Pint on Current File",
+                "category": "Laravel"
             }
         ],
         "configuration": {
@@ -639,6 +656,11 @@
                     "default": true,
                     "generated": true,
                     "description": "Enable completion for view."
+                },
+                "Laravel.pint.runOnSave": {
+                    "type": "boolean",
+                    "default": false,
+                    "description": "Automatically run Pint on the current file when saved."
                 }
             }
         }
