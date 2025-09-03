@@ -57,7 +57,31 @@
                 "command": "laravel.runPintOnCurrentFile",
                 "title": "Run Pint on Current File",
                 "category": "Laravel"
-            }
+            },
+            {
+                "command": "laravel.wrapHelpers",
+                "title": "Laravel: Wrap selection with helpers"
+            },
+            {
+                "command": "laravel.wrapHelpers.unwrap",
+                "title": "Laravel: Unwrap selection"
+            },
+            {
+                "command": "laravel.wrapHelpers.dd",
+                "title": "with dd(...)"
+            },
+            {
+                "command": "laravel.wrapHelpers.dump",
+                "title": "with dump(...)"
+            },
+            {
+                "command": "laravel.wrapHelpers.collect",
+                "title": "with collect(...)"
+            },
+            {
+                "command": "laravel.wrapHelpers.str",
+                "title": "with str(...)"
+            }            
         ],
         "keybindings": [
             {
