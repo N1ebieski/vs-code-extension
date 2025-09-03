@@ -44,36 +44,19 @@
     "contributes": {
         "commands": [
             {
-                "command": "laravel.wrapHelpers",
-                "title": "Laravel: Wrap selection with helpers"
+                "command": "laravel.runPint",
+                "title": "Run Pint",
+                "category": "Laravel"
             },
             {
-                "command": "laravel.wrapHelpers.unwrap",
-                "title": "Laravel: Unwrap selection"
+                "command": "laravel.runPintOnDirtyFiles",
+                "title": "Run Pint on Dirty Files",
+                "category": "Laravel"
             },
             {
-                "command": "laravel.wrapHelpers.dd",
-                "title": "with dd(...)"
-            },
-            {
-                "command": "laravel.wrapHelpers.dump",
-                "title": "with dump(...)"
-            },
-            {
-                "command": "laravel.wrapHelpers.collect",
-                "title": "with collect(...)"
-            },
-            {
-                "command": "laravel.wrapHelpers.str",
-                "title": "with str(...)"
-            },
-            {
-                "command": "laravel.refactorSelectedClass",
-                "title": "Laravel: Refactor selected class attribute"
-            },
-            {
-                "command": "laravel.refactorAllClasses",
-                "title": "Laravel: Refactor all class attributes"
+                "command": "laravel.runPintOnCurrentFile",
+                "title": "Run Pint on Current File",
+                "category": "Laravel"
             }
         ],
         "keybindings": [
@@ -204,23 +187,6 @@
                 }
             }
         ],
-        "commands": [
-            {
-                "command": "laravel.runPint",
-                "title": "Run Pint",
-                "category": "Laravel"
-            },
-            {
-                "command": "laravel.runPintOnDirtyFiles",
-                "title": "Run Pint on Dirty Files",
-                "category": "Laravel"
-            },
-            {
-                "command": "laravel.runPintOnCurrentFile",
-                "title": "Run Pint on Current File",
-                "category": "Laravel"
-            }
-        ],
         "configuration": {
             "title": "Laravel",
             "properties": {
@@ -284,6 +250,11 @@
                     "type": "boolean",
                     "default": true,
                     "description": "Automatically add spacing around Blade echo and comment tags."
+                },
+                "Laravel.pint.runOnSave": {
+                    "type": "boolean",
+                    "default": false,
+                    "description": "Automatically run Pint on the current file when saved."
                 },
                 "Laravel.appBinding.diagnostics": {
                     "type": "boolean",
@@ -656,11 +627,6 @@
                     "default": true,
                     "generated": true,
                     "description": "Enable completion for view."
-                },
-                "Laravel.pint.runOnSave": {
-                    "type": "boolean",
-                    "default": false,
-                    "description": "Automatically run Pint on the current file when saved."
                 }
             }
         }
