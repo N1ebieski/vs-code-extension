@@ -73,27 +73,9 @@ export async function activate(context: vscode.ExtensionContext) {
             "laravel.runPintOnDirtyFiles",
             runPintOnDirtyFiles,
         ),
-        vscode.commands.registerCommand(
-            "laravel.wrapHelpers",
-            openSubmenuCommand,
-        ),
-        vscode.commands.registerCommand(
-            "laravel.wrapHelpers.unwrap",
-            unwrapSelectionCommand,
-        ),
-        ...helpers.map((helper: string) => {
-            return vscode.commands.registerCommand(
-                `laravel.wrapHelpers.${helper}`,
-                () => wrapSelectionCommand(helper),
-            );
-        }),
-        vscode.commands.registerCommand(
-            "laravel.refactorSelectedClass",
-            refactorSelectedClassCommand,
-        ),
-        vscode.commands.registerCommand(
-            "laravel.refactorAllClasses",
-            refactorAllClassesCommand,
+        vscode.languages.registerDocumentFormattingEditProvider(
+            { language: "php" },
+            new PintEditProvider(),
         ),
     );
 
@@ -183,10 +165,6 @@ export async function activate(context: vscode.ExtensionContext) {
         vscode.workspace.onDidChangeTextDocument((event) => {
             bladeSpacer(event, vscode.window.activeTextEditor);
         }),
-        vscode.languages.registerDocumentFormattingEditProvider(
-            { language: "php" },
-            new PintEditProvider(),
-        ),
         // vscode.languages.registerDocumentHighlightProvider(
         //     documentSelector,
         //     new DocumentHighlight(),
