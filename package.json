@@ -188,12 +188,12 @@
             },
             {
                 "command": "laravel.wrapHelpers",
-                "title": "Laravel: Wrap selection with helpers",
+                "title": "Wrap selection with helpers",
                 "category": "Laravel"
             },
             {
                 "command": "laravel.wrapHelpers.unwrap",
-                "title": "Laravel: Unwrap selection",
+                "title": "Unwrap selection",
                 "category": "Laravel"
             },
             {
@@ -218,12 +218,12 @@
             },
             {
                 "command": "laravel.refactorSelectedClass",
-                "title": "Laravel: Refactor selected class attribute",
+                "title": "Refactor selected class attribute",
                 "category": "Laravel"
             },
             {
                 "command": "laravel.refactorAllClasses",
-                "title": "Laravel: Refactor all class attributes",
+                "title": "Refactor all class attributes",
                 "category": "Laravel"
             }
         ],
