@@ -66,10 +66,10 @@ const analyzeParam = (
 ):
     | { missingReason: "not_found" | "wrong_model" | "ignored" }
     | {
-          policies: AuthItem[];
-          values: AutocompleteParsingResult.StringValue[] | { value: string }[];
-          missingReason: null;
-      } => {
+        policies: AuthItem[];
+        values: AutocompleteParsingResult.StringValue[] | { value: string }[];
+        missingReason: null;
+    } => {
     if (item.type !== "methodCall" || !item.methodName || index !== 0) {
         return {
             missingReason: "ignored",
@@ -133,7 +133,7 @@ const analyzeParam = (
 
     const modelClass =
         classArg?.type === "variable"
-            ? getModelByName(classArg.name)?.class
+            ? (classArg.className ?? getModelByName(classArg.varName)?.class)
             : classArg?.className;
 
     if (!modelClass) {
