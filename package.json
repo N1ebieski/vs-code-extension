@@ -89,16 +89,6 @@
                     "command": "laravel.refactorAllHtmlClassesToBladeDirectives",
                     "when": "resourceLangId == blade",
                     "group": "laravel"
-                },
-                {
-                    "command": "laravel.refactorSelectedClass",
-                    "when": "editorHasSelection && resourceLangId == blade",
-                    "group": "laravel"
-                },
-                {
-                    "command": "laravel.refactorAllClasses",
-                    "when": "resourceLangId == blade",
-                    "group": "laravel"
                 }
             ],
             "editor/context": [
