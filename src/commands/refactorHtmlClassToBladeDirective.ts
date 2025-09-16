@@ -1,4 +1,5 @@
 import * as vscode from "vscode";
+import { commandName } from ".";
 
 const transformClass = (classList: string) => {
     const classes = classList
@@ -10,7 +11,12 @@ const transformClass = (classList: string) => {
     return `@class([${classes}])`;
 };
 
-export const refactorAllClassesCommand = () => {
+export const htmlClassToBladeDirectiveCommands = {
+    selected: commandName("laravel.refactorSelectedHtmlClassToBladeDirective"),
+    all: commandName("laravel.refactorAllHtmlClassesToBladeDirectives"),
+};
+
+export const refactorAllHtmlClassesToBladeDirectives = () => {
     const editor = vscode.window.activeTextEditor;
 
     if (!editor) {
@@ -37,7 +43,7 @@ export const refactorAllClassesCommand = () => {
     });
 };
 
-export const refactorSelectedClassCommand = () => {
+export const refactorSelectedHtmlClassToBladeDirective = () => {
     const editor = vscode.window.activeTextEditor;
 
     if (!editor) {

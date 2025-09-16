@@ -52,3 +52,5 @@ file_put_contents(
     __DIR__ . '/src/support/generated-config.ts',
     "export type GeneratedConfigKey = '" . implode("' | '", $keys) . "';" . PHP_EOL
 );
+
+exec('npm run format');
