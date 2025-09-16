@@ -113,12 +113,12 @@
                     "group": "laravel"
                 },
                 {
-                    "command": "laravel.refactorSelectedClass",
+                    "command": "laravel.refactorSelectedHtmlClassToBladeDirective",
                     "when": "editorHasSelection && resourceLangId == blade",
                     "group": "laravel"
                 },
                 {
-                    "command": "laravel.refactorAllClasses",
+                    "command": "laravel.refactorAllHtmlClassesToBladeDirectives",
                     "when": "resourceLangId == blade",
                     "group": "laravel"
                 }
@@ -135,16 +135,6 @@
                 },
                 {
                     "command": "laravel.wrapWithHelper.str"
-                },
-                {
-                    "command": "laravel.refactorSelectedHtmlClassToBladeDirective",
-                    "when": "editorHasSelection && resourceLangId == blade",
-                    "group": "laravel"
-                },
-                {
-                    "command": "laravel.refactorAllHtmlClassesToBladeDirectives",
-                    "when": "resourceLangId == blade",
-                    "group": "laravel"
                 }
             ]
         },
