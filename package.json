@@ -3,7 +3,7 @@
     "publisher": "laravel",
     "displayName": "Laravel",
     "description": "Official VS Code extension for Laravel",
-    "version": "1.2.0",
+    "version": "1.2.1",
     "engines": {
         "vscode": "^1.89.0"
     },
@@ -88,6 +88,11 @@
                 {
                     "command": "laravel.refactorAllHtmlClassesToBladeDirectives",
                     "when": "resourceLangId == blade",
+                    "group": "laravel"
+                },
+                {
+                    "command": "laravel.generateNamespace",
+                    "when": "resourceLangId == php",
                     "group": "laravel"
                 }
             ],
@@ -207,6 +212,11 @@
             {
                 "command": "laravel.refactorAllHtmlClassesToBladeDirectives",
                 "title": "Refactor all HTML class attributes to Blade directives",
+                "category": "Laravel"
+            },
+            {
+                "command": "laravel.generateNamespace",
+                "title": "Generate namespace",
                 "category": "Laravel"
             }
         ],
