@@ -2,7 +2,7 @@
 
 ------------
 
-# Official Laravel VS Code Extension
+# Official Laravel VS Code Extension 
 
 Below you'll find a list of features as well as a roadmap with features we will be integrating soon.
 
