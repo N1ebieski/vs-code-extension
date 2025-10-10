@@ -7,6 +7,7 @@ import {
 } from "@src/repositories/models";
 import { config } from "@src/support/config";
 import { detect } from "@src/support/parser";
+import { projectPath } from "@src/support/project";
 import { AutocompleteParsingResult } from "@src/types";
 import * as vscode from "vscode";
 import { CompletionProvider, Eloquent, FeatureTag } from "..";
@@ -142,7 +143,7 @@ export class ScopeHoverProvider implements vscode.HoverProvider {
                 (scope) => scope.name === scopeName,
             );
 
-            if (!scope?.uri) {
+            if (!scope?.path) {
                 return null;
             }
 
@@ -151,7 +152,7 @@ export class ScopeHoverProvider implements vscode.HoverProvider {
                     title: "Go to implementation",
                     command: "laravel.open",
                     arguments: [
-                        vscode.Uri.file(scope.uri),
+                        vscode.Uri.file(projectPath(scope.path)),
                         scope.start_line,
                         0,
                     ],
