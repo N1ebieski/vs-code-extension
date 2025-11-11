@@ -73,8 +73,17 @@ declare namespace Eloquent {
         [key: string]: Model;
     }
 
+    interface ScopeParameter {
+        name: string;
+        type: string | null;
+        hasDefault: boolean;
+        default: string | null;
+        isOptional: boolean;
+    }
+
     interface Scope {
         name: string;
+        parameters: ScopeParameter[];
         path: string | null;
         start_line: number | false;
     }

@@ -114,15 +114,40 @@ const getBlocks = (
     return model.attributes
         .map((attr) => getAttributeBlocks(attr, className))
         .concat(
-            [
-                ...model.scopes.map((scope) => scope.name),
-                "newModelQuery",
-                "newQuery",
-                "query",
-            ].map((method) => {
+            ["newModelQuery", "newQuery", "query"].map((method) => {
                 return `@method static ${modelBuilderType(
                     className,
                 )} ${method}()`;
+            }),
+        )
+        .concat(
+            model.scopes.map((scope) => {
+                const parameters = scope.parameters
+                    .slice(1)
+                    .map((param) => {
+                        let paramAsString = "";
+
+                        if (param.type !== null) {
+                            paramAsString += `${param.type} `;
+                        }
+
+                        if (param.isOptional && !param.hasDefault) {
+                            paramAsString += "...";
+                        }
+
+                        paramAsString += `$${param.name}`;
+
+                        if (param.hasDefault) {
+                            paramAsString += ` = ${param.default}`;
+                        }
+
+                        return paramAsString;
+                    })
+                    .join(", ");
+
+                return `@method static ${modelBuilderType(
+                    className,
+                )} ${scope.name}(${parameters})`;
             }),
         )
         .concat(model.relations.map((relation) => getRelationBlocks(relation)))
