@@ -73,7 +73,7 @@ $blade = new class {
 
             foreach ($files as $file) {
                 $realPath = $file->getRealPath();
-                $path = str_replace(base_path(DIRECTORY_SEPARATOR), '', $realPath);
+                $path = str_replace(base_path() . DIRECTORY_SEPARATOR, '', $realPath);
                 $key = str($realPath)
                     ->replace(realpath($path), "")
                     ->replace(".php", "")
@@ -164,7 +164,7 @@ $blade = new class {
 
         foreach ($files as $file) {
             $paths[] = [
-                "path" => str_replace(base_path(DIRECTORY_SEPARATOR), '', $file->getRealPath()),
+                "path" => str_replace(base_path() . DIRECTORY_SEPARATOR, '', $file->getRealPath()),
                 "isVendor" => str_contains($file->getRealPath(), base_path("vendor")),
                 "key" => str($file->getRealPath())
                     ->replace(realpath($path), "")
