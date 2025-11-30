@@ -83,7 +83,7 @@ export const runPintOnCurrentFile = () => {
     }
 
     statusBarWorking("Running Pint on current file...");
-    runPintCommand(fixFilePath(filePath));
+    runPintCommand(`"${fixFilePath(filePath)}"`);
 };
 
 export const runPintOnDirtyFiles = () => {
