@@ -183,7 +183,7 @@ const runCommand = (command: string): Promise<string> => {
         const extraArgs = os.platform() === "win32" ? "--from-file" : "";
         const toRun = `"${parserBinaryPath}" ${command} ${extraArgs}`;
 
-        console.log("running command", toRun);
+        //console.log("running command", toRun);
 
         cp.exec(
             toRun,
