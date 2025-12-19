@@ -54,12 +54,14 @@ $models = new class($factory) {
 
     public function all()
     {
-        collect(\\Illuminate\\Support\\Facades\\File::directories(app_path()))
-            ->filter(fn (string $dir) => str_ends_with($dir, 'Models'))
-            ->flatMap(fn (string $dir) => \\Illuminate\\Support\\Facades\\File::allFiles($dir))
-            ->merge(\\Illuminate\\Support\\Facades\\File::files(app_path()))
-            ->filter(fn(\\Symfony\\Component\\Finder\\SplFileInfo $file) => $file->getExtension() === 'php')
-            ->each(fn(\\Symfony\\Component\\Finder\\SplFileInfo $file) => include_once($file));
+        if (\\Illuminate\\Support\\Facades\\File::isDirectory(base_path('app/Models'))) {
+            collect(\\Illuminate\\Support\\Facades\\File::directories(app_path()))
+                ->filter(fn (string $dir) => str_ends_with($dir, 'Models'))
+                ->flatMap(fn (string $dir) => \\Illuminate\\Support\\Facades\\File::allFiles($dir))
+                ->merge(\\Illuminate\\Support\\Facades\\File::files(app_path()))
+                ->filter(fn(\\Symfony\\Component\\Finder\\SplFileInfo $file) => $file->getExtension() === 'php')
+                ->each(fn(\\Symfony\\Component\\Finder\\SplFileInfo $file) => include_once($file));
+        }
 
         return collect(get_declared_classes())
             ->filter(fn($class) => is_subclass_of($class, \\Illuminate\\Database\\Eloquent\\Model::class))
