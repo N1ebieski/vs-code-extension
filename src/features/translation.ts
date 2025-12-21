@@ -323,6 +323,13 @@ const getCodeAction = async (
         return null;
     }
 
+    const nestedKeys = missingVar.split(".").length - 1;
+
+    // Case when a user tries to add a new translation key to an existing key that is not an array
+    if (!translationPath.line && nestedKeys > 1) {
+        return null;
+    }
+
     const translationContents = await vscode.workspace.fs.readFile(
         vscode.Uri.file(translationPath.path),
     );
@@ -348,9 +355,7 @@ const getCodeAction = async (
 
     const key = missingVar.split(".").pop();
 
-    const parents = missingVar.split(".").length - 1;
-
-    const indent = " ".repeat((getIndentNumber("php") ?? 4) * parents);
+    const indent = " ".repeat((getIndentNumber("php") ?? 4) * nestedKeys);
 
     const finalValue = `${indent}'${key}' => '',\n`;
 
