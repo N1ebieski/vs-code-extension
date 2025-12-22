@@ -337,7 +337,7 @@ const addToJsonFile = async (
     );
 
     const action = new vscode.CodeAction(
-        "Add translation to the json file",
+        "Add translation to the JSON file",
         vscode.CodeActionKind.QuickFix,
     );
 
@@ -416,7 +416,7 @@ const addToPhpFile = async (
     );
 
     const action = new vscode.CodeAction(
-        "Add translation to the php file",
+        "Add translation to the PHP file",
         vscode.CodeActionKind.QuickFix,
     );
 
