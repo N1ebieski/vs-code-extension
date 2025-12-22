@@ -1,5 +1,5 @@
 import { openFile } from "@src/commands";
-import { DiagnosticWithContext, notFound, NotFoundCode } from "@src/diagnostic";
+import { DiagnosticWithContext, notFound } from "@src/diagnostic";
 import AutocompleteResult from "@src/parser/AutocompleteResult";
 import {
     getTranslationItemByName,
@@ -13,7 +13,7 @@ import { findHoverMatchesInDoc } from "@src/support/doc";
 import { getIndentNumber } from "@src/support/indent";
 import { detectedRange, detectInDoc } from "@src/support/parser";
 import { wordMatchRegex } from "@src/support/patterns";
-import { relativePath } from "@src/support/project";
+import { projectPath, relativePath } from "@src/support/project";
 import {
     contract,
     createIndexMapping,
@@ -242,24 +242,11 @@ export const diagnosticProvider = (
                 return null;
             }
 
-            const lang = getLang(item as AutocompleteParsingResult.MethodCall);
-
-            const translationPath = getTranslationPathByName(param.value, lang);
-
-            const code: NotFoundCode = translationPath
-                ? {
-                      value: "translation",
-                      target: vscode.Uri.file(translationPath.path).with(
-                          withLineFragment(translationPath.line),
-                      ),
-                  }
-                : "translation";
-
             return notFound(
                 "Translation",
                 param.value,
                 detectedRange(param),
-                code,
+                "translation",
                 item,
             );
         },
@@ -267,13 +254,12 @@ export const diagnosticProvider = (
 };
 
 export const codeActionProvider: CodeActionProviderFunction = async (
-    code: string,
     diagnostic: DiagnosticWithContext,
     document: vscode.TextDocument,
     range: vscode.Range | vscode.Selection,
     token: vscode.CancellationToken,
 ): Promise<vscode.CodeAction[]> => {
-    if (code !== "translation") {
+    if (diagnostic.code !== "translation") {
         return [];
     }
 
@@ -283,28 +269,18 @@ export const codeActionProvider: CodeActionProviderFunction = async (
         return [];
     }
 
-    const actions = await Promise.all([addToFile(diagnostic, missingVar)]);
+    const actions = await Promise.all([
+        addToPhpFile(diagnostic, missingVar),
+        addToJsonFile(diagnostic, missingVar),
+    ]);
 
     return actions.filter((action) => action !== null);
 };
 
-const addToFile = async (
+const addToJsonFile = async (
     diagnostic: DiagnosticWithContext,
     missingVar: string,
 ): Promise<vscode.CodeAction | null> => {
-    return getCodeAction(
-        "Add variable to the translation file",
-        missingVar,
-        diagnostic,
-    );
-};
-
-const getCodeAction = async (
-    title: string,
-    missingVar: string,
-    diagnostic: DiagnosticWithContext,
-    value?: string,
-) => {
     const edit = new vscode.WorkspaceEdit();
 
     const translation = getTranslationItemByName(missingVar);
@@ -313,11 +289,85 @@ const getCodeAction = async (
         return null;
     }
 
-    const lang = getLang(
-        diagnostic.context as AutocompleteParsingResult.MethodCall,
+    const translationPath = getTranslations().items.paths.find((path) => {
+        const lang =
+            getLang(
+                diagnostic.context as AutocompleteParsingResult.MethodCall,
+            ) ?? getTranslations().items.default;
+
+        return !path.startsWith("vendor/") && path.endsWith(`${lang}.json`);
+    });
+
+    if (!translationPath) {
+        return null;
+    }
+
+    const translationContents = await vscode.workspace.fs.readFile(
+        vscode.Uri.file(projectPath(translationPath)),
     );
 
-    const translationPath = getTranslationPathByName(missingVar, lang);
+    const lines = translationContents.toString().split("\n");
+
+    let lineNumber = undefined;
+
+    for (let i = 0; i < lines.length; i++) {
+        if (lines[i].startsWith("}")) {
+            lineNumber = i;
+        }
+    }
+
+    if (!lineNumber) {
+        return null;
+    }
+
+    const indent = " ".repeat(getIndentNumber("json") ?? 4);
+
+    const finalValue = `${indent}"${missingVar}": ""\n`;
+
+    edit.insert(
+        vscode.Uri.file(projectPath(translationPath)),
+        new vscode.Position(lineNumber - 1, lines[lineNumber - 1].length),
+        ",",
+    );
+
+    edit.insert(
+        vscode.Uri.file(projectPath(translationPath)),
+        new vscode.Position(lineNumber, 0),
+        finalValue,
+    );
+
+    const action = new vscode.CodeAction(
+        "Add translation to the json file",
+        vscode.CodeActionKind.QuickFix,
+    );
+
+    action.edit = edit;
+    action.command = openFile(
+        projectPath(translationPath),
+        lineNumber,
+        finalValue.length - 2,
+    );
+    action.diagnostics = [diagnostic];
+
+    return action;
+};
+
+const addToPhpFile = async (
+    diagnostic: DiagnosticWithContext,
+    missingVar: string,
+): Promise<vscode.CodeAction | null> => {
+    const edit = new vscode.WorkspaceEdit();
+
+    const translation = getTranslationItemByName(missingVar);
+
+    if (translation) {
+        return null;
+    }
+
+    const translationPath = getTranslationPathByName(
+        missingVar,
+        getLang(diagnostic.context as AutocompleteParsingResult.MethodCall),
+    );
 
     if (!translationPath) {
         return null;
@@ -365,7 +415,10 @@ const getCodeAction = async (
         finalValue,
     );
 
-    const action = new vscode.CodeAction(title, vscode.CodeActionKind.QuickFix);
+    const action = new vscode.CodeAction(
+        "Add translation to the php file",
+        vscode.CodeActionKind.QuickFix,
+    );
 
     action.edit = edit;
     action.command = openFile(
@@ -374,7 +427,6 @@ const getCodeAction = async (
         finalValue.length - 3,
     );
     action.diagnostics = [diagnostic];
-    action.isPreferred = value === undefined;
 
     return action;
 };

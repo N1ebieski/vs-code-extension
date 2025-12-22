@@ -1,5 +1,5 @@
 import { openFile } from "@src/commands";
-import { notFound, NotFoundCode } from "@src/diagnostic";
+import { notFound } from "@src/diagnostic";
 import AutocompleteResult from "@src/parser/AutocompleteResult";
 import { getConfigPathByName, getConfigs } from "@src/repositories/configs";
 import { config } from "@src/support/config";
@@ -179,30 +179,23 @@ export const diagnosticProvider = (
                 return null;
             }
 
-            const configPath = getConfigPathByName(param.value);
-
-            const code: NotFoundCode = configPath
-                ? {
-                      value: "config",
-                      target: vscode.Uri.file(configPath.path).with(
-                          withLineFragment(configPath.line),
-                      ),
-                  }
-                : "config";
-
-            return notFound("Config", param.value, detectedRange(param), code);
+            return notFound(
+                "Config",
+                param.value,
+                detectedRange(param),
+                "config",
+            );
         },
     );
 };
 
 export const codeActionProvider: CodeActionProviderFunction = async (
-    code: string,
     diagnostic: vscode.Diagnostic,
     document: vscode.TextDocument,
     range: vscode.Range | vscode.Selection,
     token: vscode.CancellationToken,
 ): Promise<vscode.CodeAction[]> => {
-    if (code !== "config") {
+    if (diagnostic.code !== "config") {
         return [];
     }
 
@@ -221,19 +214,6 @@ const addToFile = async (
     diagnostic: vscode.Diagnostic,
     missingVar: string,
 ): Promise<vscode.CodeAction | null> => {
-    return getCodeAction(
-        "Add variable to the configuration file",
-        missingVar,
-        diagnostic,
-    );
-};
-
-const getCodeAction = async (
-    title: string,
-    missingVar: string,
-    diagnostic: vscode.Diagnostic,
-    value?: string,
-) => {
     const edit = new vscode.WorkspaceEdit();
 
     const config = getConfigs().items.configs.find(
@@ -300,7 +280,10 @@ const getCodeAction = async (
         finalValue,
     );
 
-    const action = new vscode.CodeAction(title, vscode.CodeActionKind.QuickFix);
+    const action = new vscode.CodeAction(
+        "Add config to the file",
+        vscode.CodeActionKind.QuickFix,
+    );
 
     action.edit = edit;
     action.command = openFile(
@@ -309,7 +292,6 @@ const getCodeAction = async (
         finalValue.length - 3,
     );
     action.diagnostics = [diagnostic];
-    action.isPreferred = value === undefined;
 
     return action;
 };
