@@ -202,7 +202,7 @@ $models = new class($factory) {
             $name->studly()->lower()->toString(),
         ])->unique()->values()->toArray();
     }
-             
+
     protected function getScopeParameterInfo(\ReflectionParameter $parameter): array
     {
         $result = [
