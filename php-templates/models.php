@@ -141,44 +141,6 @@ $models = new class($factory) {
         return \Illuminate\Support\Str::start($parent, '\\');
     }
 
-    protected function defaultToString(mixed $value): string {
-        return match (true) {
-            is_null($value) => 'null',
-            is_numeric($value) => $value,
-            is_bool($value) => $value ? 'true' : 'false',
-            is_array($value) => '[...]',
-            is_object($value) && enum_exists(get_class($value)) => '\\' . get_class($value) . '::' . $value->name,
-            is_object($value) => '\\' . get_class($value),
-            default => "'{$value}'",
-        };
-    }
-
-    protected function typeToString(?ReflectionType $type): string {
-        if ($type instanceof ReflectionNamedType) {
-            $name = $type->getName();
-
-            if (!$type->isBuiltin()) {
-                $name = '\\' . ltrim($name, '\\');
-            }
-
-            return ($type->allowsNull() ? '?' : '') . $name;
-        }
-
-        if ($type instanceof ReflectionUnionType) {
-            $types = array_map(fn(ReflectionNamedType|ReflectionIntersectionType $t) => $this->typeToString($t), $type->getTypes());
-
-            return implode('|', $types);
-        }
-
-        if ($type instanceof ReflectionIntersectionType) {
-            $types = array_map(fn(ReflectionNamedType|ReflectionIntersectionType $t) => $this->typeToString($t), $type->getTypes());
-
-            return implode('&', $types);
-        }
-
-        return 'mixed';
-    }
-
     protected function getInfo($className)
     {
         if (($data = $this->fromArtisan($className)) === null) {
@@ -215,13 +177,7 @@ $models = new class($factory) {
                 "name" => str($method->name)->replace('scope', '')->lcfirst()->toString(),
                 "path" => $method->getFileName() ? LaravelVsCode::relativePath($method->getFileName()) : null,  
                 "start_line" => $method->getStartLine(),
-                "parameters" => collect($method->getParameters())->map(fn(\ReflectionParameter $param) => [
-                    "name" => $param->getName(),
-                    "type" => $this->typeToString($param->getType()),
-                    "hasDefault" => $param->isDefaultValueAvailable(),
-                    "default" => $param->isDefaultValueAvailable() ? $this->defaultToString($param->getDefaultValue()) : null,
-                    "isOptional" => $param->isOptional()
-                ]),
+                "parameters" => collect($method->getParameters())->map($this->getScopeParameterInfo(...)),
             ])
             ->values()
             ->toArray();
@@ -245,7 +201,85 @@ $models = new class($factory) {
             $name->studly()->toString(),
             $name->studly()->lower()->toString(),
         ])->unique()->values()->toArray();
-    }     
+    }
+             
+    protected function getScopeParameterInfo(\ReflectionParameter $parameter): array
+    {
+        $result = [
+            "name" => $parameter->getName(),
+            "type" => $this->typeToString($parameter->getType()),
+            "hasDefault" => $parameter->isDefaultValueAvailable(),
+            "isVariadic" => $parameter->isVariadic(),
+            "isPassedByReference" => $parameter->isPassedByReference(),
+        ];
+
+        if ($parameter->isDefaultValueAvailable()) {
+            $result['default'] = $this->defaultValueToString($parameter);
+        }
+
+        return $result;
+    }
+
+    protected function typeToString(?\ReflectionType $type): string
+    {
+        return match (true) {
+            $type instanceof \ReflectionNamedType => $this->namedTypeToString($type),
+            $type instanceof \ReflectionUnionType => $this->unionTypeToString($type),
+            $type instanceof \ReflectionIntersectionType => $this->intersectionTypeToString($type),
+            default => 'mixed',
+        };
+    }
+
+    protected function namedTypeToString(\ReflectionNamedType $type): string
+    {
+        $name = $type->getName();
+
+        if (! $type->isBuiltin() && ! in_array($name, ['self', 'parent', 'static'])) {
+            $name = '\\'.$name;
+        }
+
+        if ($type->allowsNull() && ! in_array($name, ['null', 'mixed', 'void'])) {
+            $name = '?'.$name;
+        }
+
+        return $name;
+    }
+
+    protected function unionTypeToString(\ReflectionUnionType $type): string
+    {
+        return implode('|', array_map(function (\ReflectionType $type) {
+            $result = $this->typeToString($type);
+
+            if ($type instanceof \ReflectionIntersectionType) {
+                return "({$result})";
+            }
+
+            return $result;
+        }, $type->getTypes()));
+    }
+
+    protected function intersectionTypeToString(\ReflectionIntersectionType $type): string
+    {
+        return implode('&', array_map($this->typeToString(...), $type->getTypes()));
+    }
+
+    protected function defaultValueToString(\ReflectionParameter $param): string
+    {
+        if ($param->isDefaultValueConstant()) {
+            return '\\'.$param->getDefaultValueConstantName();
+        }
+
+        $value = $param->getDefaultValue();
+
+        return match (true) {
+            is_null($value) => 'null',
+            is_numeric($value) => $value,
+            is_bool($value) => $value ? 'true' : 'false',
+            is_array($value) => '[]',
+            is_object($value) => 'new \\'.get_class($value),
+            default => "'{$value}'",
+        };
+    }
 };
 
 $builder = new class($docblocks) {

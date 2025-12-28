@@ -73,21 +73,6 @@ declare namespace Eloquent {
         [key: string]: Model;
     }
 
-    interface ScopeParameter {
-        name: string;
-        type: string | null;
-        hasDefault: boolean;
-        default: string | null;
-        isOptional: boolean;
-    }
-
-    interface Scope {
-        name: string;
-        path: string | null;
-        start_line: number | false;
-        parameters: ScopeParameter[];
-    }
-
     interface Model {
         class: string;
         uri: string | false;
@@ -133,5 +118,19 @@ declare namespace Eloquent {
     interface Observer {
         event: string;
         observer: string[];
+    }
+
+    interface Scope {
+        name: string;
+        parameters: ScopeParameter[];
+    }
+
+    interface ScopeParameter {
+        name: string;
+        type: string;
+        default?: string | null;
+        isOptional: boolean;
+        isVariadic: boolean;
+        isPassedByReference: boolean;
     }
 }
