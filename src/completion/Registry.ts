@@ -90,7 +90,7 @@ export class Registry implements vscode.CompletionItemProvider {
             }
 
             if (typeof classExtends === "string") {
-                classExtends = [classExtends];
+                return parseResult.extendsClass(classExtends);
             }
 
             return classExtends.some((className) =>
