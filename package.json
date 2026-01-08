@@ -346,7 +346,7 @@
                 },
                 {
                     "command": "laravel.artisan.make.model",
-                    "when": "explorerResourceIsFolder && resourcePath =~ /(\\/|\\\\)[^\\/\\\\]+?Model(s?)(\\/|\\\\|$)/i",
+                    "when": "explorerResourceIsFolder && resourcePath =~ /(\\/|\\\\)[^\\/\\\\]*?Model(s?)(\\/|\\\\|$)/i",
                     "group": "navigation"
                 },
                 {
