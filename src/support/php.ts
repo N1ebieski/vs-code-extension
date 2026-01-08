@@ -271,8 +271,12 @@ const getHashedFile = (code: string) => {
     return fixFilePath(hashedFile);
 };
 
-export const getCommand = (): string => {
-    return getCommandTemplate().replace('"{code}"', "").trim();
+export const getCommand = (code: string): string => {
+    const commandTemplate = getCommandTemplate();
+
+    return commandTemplate.includes("{code}")
+        ? commandTemplate.replace("{code}", code)
+        : `${commandTemplate} "${code}"`;
 };
 
 export const getCommandTemplate = (): string => {
@@ -287,13 +291,7 @@ export const runPhp = (
         code = "<?php\n\n" + code;
     }
 
-    const commandTemplate = getCommandTemplate();
-
-    const hashedFile = getHashedFile(code);
-
-    const command = commandTemplate.includes("{code}")
-        ? commandTemplate.replace("{code}", hashedFile)
-        : `${commandTemplate} "${hashedFile}"`;
+    const command = getCommand(getHashedFile(code));
 
     return new Promise<string>(function (resolve, error) {
         let result = "";
@@ -323,15 +321,9 @@ export const runPhp = (
 
 export const artisan = (
     command: string,
-    workspaceFolder?: string | undefined,
+    workspaceFolder: string,
 ): Promise<string> => {
-    const phpPath = getCommand();
-
-    // Without php at the beginning, it doesn't work on Windows
-    const fullCommand = `${phpPath} artisan ${command}`.trim();
-
-    // Support for multi-root workspaces
-    workspaceFolder ??= getWorkspaceFolders()[0]?.uri?.fsPath;
+    const fullCommand = `${getCommand("artisan")} ${command}`.trim();
 
     return new Promise<string>((resolve, error) => {
         cp.exec(

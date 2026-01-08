@@ -4,14 +4,10 @@ import * as vscode from "vscode";
 
 import os from "os";
 import { LanguageClient } from "vscode-languageclient/node";
+import { registerArtisanMakeCommands } from "./artisan/registry";
 import { bladeSpacer } from "./blade/bladeSpacer";
 import { initClient } from "./blade/client";
 import { commandName, openFileCommand } from "./commands";
-import {
-    artisanMakeCommand,
-    artisanMakeCommandNameSubCommandName,
-    artisanMakeOpenSubmenuCommand,
-} from "./commands/artisanMake";
 import { generateNamespaceCommand } from "./commands/generateNamespace";
 import {
     pintCommands,
@@ -35,7 +31,6 @@ import {
     wrapWithHelperCommands,
 } from "./commands/wrapWithHelper";
 import { ScopeHoverProvider } from "./features/model";
-import { getArtisanMakeCommands } from "./repositories/artisanMakeCommands";
 import { configAffected } from "./support/config";
 import { collectDebugInfo } from "./support/debug";
 import {
@@ -296,16 +291,7 @@ export async function activate(context: vscode.ExtensionContext) {
             htmlClassToBladeDirectiveCommands.all,
             refactorAllHtmlClassesToBladeDirectives,
         ),
-        vscode.commands.registerCommand(
-            commandName("laravel.artisan.make"),
-            artisanMakeOpenSubmenuCommand,
-        ),
-        ...getArtisanMakeCommands().map((command) => {
-            return vscode.commands.registerCommand(
-                artisanMakeCommandNameSubCommandName(command.name),
-                (uri: vscode.Uri) => artisanMakeCommand(command, uri),
-            );
-        }),
+        ...registerArtisanMakeCommands(),
     );
 
     collectDebugInfo();
