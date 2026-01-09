@@ -2,15 +2,15 @@ import { openFile } from "@src/commands";
 import { DiagnosticWithContext, notFound } from "@src/diagnostic";
 import AutocompleteResult from "@src/parser/AutocompleteResult";
 import {
+    getNestedPreviousTranslationItemByName,
+    getNestedTranslationItemByName,
     getTranslationItemByName,
-    getTranslationPathByName,
     getTranslations,
     NestedTranslationItem,
     TranslationItem,
 } from "@src/repositories/translations";
 import { config } from "@src/support/config";
 import { findHoverMatchesInDoc } from "@src/support/doc";
-import { getIndentNumber } from "@src/support/indent";
 import { detectedRange, detectInDoc } from "@src/support/parser";
 import { wordMatchRegex } from "@src/support/patterns";
 import { projectPath, relativePath } from "@src/support/project";
@@ -18,9 +18,11 @@ import {
     contract,
     createIndexMapping,
     facade,
-    withLineFragment,
+    generateNestedKeysStructure,
+    indent,
 } from "@src/support/util";
 import { AutocompleteParsingResult } from "@src/types";
+import os from "os";
 import * as vscode from "vscode";
 import {
     CodeActionProviderFunction,
@@ -301,6 +303,8 @@ const addToJsonFile = async (
         return null;
     }
 
+    const path = projectPath(translationPath);
+
     const translationContents = await vscode.workspace.fs.readFile(
         vscode.Uri.file(projectPath(translationPath)),
     );
@@ -313,18 +317,17 @@ const addToJsonFile = async (
         return null;
     }
 
-    const indent = " ".repeat(getIndentNumber("json") ?? 4);
-
-    const finalValue = `${indent}"${missingVar}": ""\n`;
+    const finalValue =
+        [indent(""), `"${missingVar}": `, '""'].join("") + os.EOL;
 
     edit.insert(
-        vscode.Uri.file(projectPath(translationPath)),
+        vscode.Uri.file(path),
         new vscode.Position(lineNumber - 1, lines[lineNumber - 1].length),
         ",",
     );
 
     edit.insert(
-        vscode.Uri.file(projectPath(translationPath)),
+        vscode.Uri.file(path),
         new vscode.Position(lineNumber, 0),
         finalValue,
     );
@@ -335,11 +338,7 @@ const addToJsonFile = async (
     );
 
     action.edit = edit;
-    action.command = openFile(
-        projectPath(translationPath),
-        lineNumber,
-        finalValue.length - 2,
-    );
+    action.command = openFile(path, lineNumber, finalValue.length - 2);
     action.diagnostics = [diagnostic];
 
     return action;
@@ -357,32 +356,57 @@ const addToPhpFile = async (
         return null;
     }
 
-    const translationPath = getTranslationPathByName(
-        missingVar,
-        getLang(diagnostic.context as AutocompleteParsingResult.MethodCall),
-    );
+    const nestedTranslation = getNestedTranslationItemByName(missingVar);
 
-    if (!translationPath) {
+    // Case when user tries to add a key to a existing key that is not an array
+    if (nestedTranslation) {
         return null;
     }
 
-    const countNestedKeys = missingVar.split(".").length - 1;
+    const nestedPreviousTranslation =
+        getNestedPreviousTranslationItemByName(missingVar);
 
-    // Case when a user tries to add a new translation key to an existing key that is not an array
-    if (!translationPath.line && countNestedKeys > 1) {
+    if (!nestedPreviousTranslation) {
         return null;
     }
+
+    const lang =
+        getLang(diagnostic.context as AutocompleteParsingResult.MethodCall) ??
+        getTranslations().items.default;
+
+    const nestedPreviousTranslationItem = nestedPreviousTranslation?.[lang];
+
+    if (!nestedPreviousTranslationItem) {
+        return null;
+    }
+
+    // We have to compare the missing var to the nested translation item name and find new keys
+    // to add, for example: foo.bar.new-nested-key.new-key compares to foo.bar.baz.example gives
+    // ["new-nested-key", "new-key"]
+    const commonKeys = nestedPreviousTranslationItem.name
+        .split(".")
+        .filter((v, i) => v === missingVar.split(".")[i]);
+
+    const nestedKeys = missingVar
+        .slice(commonKeys.join(".").length + 1)
+        .split(".");
+
+    const startIndentNumber = commonKeys.length;
 
     const translationContents = await vscode.workspace.fs.readFile(
-        vscode.Uri.file(translationPath.path),
+        vscode.Uri.file(nestedPreviousTranslationItem.path),
     );
 
-    const lineNumberFromConfig = translationPath.line
-        ? translationPath.line - 1
+    const nestedKeyDepth = nestedPreviousTranslationItem.name
+        .slice(commonKeys.join(".").length + 1)
+        .split(".").length;
+
+    const lineNumberFromTranslation = nestedPreviousTranslationItem.line
+        ? nestedPreviousTranslationItem.line - nestedKeyDepth
         : undefined;
 
     const lineNumber =
-        lineNumberFromConfig ??
+        lineNumberFromTranslation ??
         translationContents
             .toString()
             .split("\n")
@@ -392,14 +416,15 @@ const addToPhpFile = async (
         return null;
     }
 
-    const key = missingVar.split(".").pop();
+    const nestedKeysStructure = generateNestedKeysStructure(
+        nestedKeys,
+        startIndentNumber,
+    );
 
-    const indent = " ".repeat((getIndentNumber("php") ?? 4) * countNestedKeys);
-
-    const finalValue = `${indent}'${key}' => '',\n`;
+    const finalValue = nestedKeysStructure.join(os.EOL) + os.EOL;
 
     edit.insert(
-        vscode.Uri.file(translationPath.path),
+        vscode.Uri.file(nestedPreviousTranslationItem.path),
         new vscode.Position(lineNumber, 0),
         finalValue,
     );
@@ -411,9 +436,9 @@ const addToPhpFile = async (
 
     action.edit = edit;
     action.command = openFile(
-        translationPath.path,
-        lineNumber,
-        finalValue.length - 3,
+        nestedPreviousTranslationItem.path,
+        lineNumber + nestedKeys.length - 1,
+        nestedKeysStructure[nestedKeys.length - 1].length - 2,
     );
     action.diagnostics = [diagnostic];
 

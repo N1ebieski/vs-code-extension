@@ -1,15 +1,24 @@
 import { openFile } from "@src/commands";
 import { notFound } from "@src/diagnostic";
 import AutocompleteResult from "@src/parser/AutocompleteResult";
-import { getConfigPathByName, getConfigs } from "@src/repositories/configs";
+import {
+    ARRAY_VALUE,
+    getConfigByName,
+    getConfigs,
+    getNestedConfigByName,
+} from "@src/repositories/configs";
 import { config } from "@src/support/config";
 import { findHoverMatchesInDoc } from "@src/support/doc";
-import { getIndentNumber } from "@src/support/indent";
 import { detectedRange, detectInDoc } from "@src/support/parser";
 import { wordMatchRegex } from "@src/support/patterns";
 import { projectPath } from "@src/support/project";
-import { contract, facade, withLineFragment } from "@src/support/util";
+import {
+    contract,
+    facade,
+    generateNestedKeysStructure,
+} from "@src/support/util";
 import { AutocompleteParsingResult } from "@src/types";
+import os from "os";
 import * as vscode from "vscode";
 import {
     CodeActionProviderFunction,
@@ -216,21 +225,30 @@ const addToFile = async (
 ): Promise<vscode.CodeAction | null> => {
     const edit = new vscode.WorkspaceEdit();
 
-    const config = getConfigs().items.configs.find(
-        (c) => c.name === missingVar,
-    );
+    const config = getConfigByName(missingVar);
 
     if (config) {
         return null;
     }
 
-    const configPath = getConfigPathByName(missingVar);
+    const nestedConfig = getNestedConfigByName(missingVar);
 
-    if (!configPath) {
+    if (!nestedConfig) {
         return null;
     }
 
-    const fileName = configPath.path.split("/").pop()?.replace(".php", "");
+    if (!nestedConfig.file) {
+        return null;
+    }
+
+    // Case when user tries to add a key to a existing key that is not an array
+    if (nestedConfig.value !== ARRAY_VALUE) {
+        return null;
+    }
+
+    const path = projectPath(nestedConfig.file);
+
+    const fileName = path.split("/").pop()?.replace(".php", "");
 
     if (!fileName) {
         return null;
@@ -238,21 +256,20 @@ const addToFile = async (
 
     // Remember that Laravel config keys can go to subfolders, for example: foo.bar.baz.example
     // can be: foo/bar.php with a key "baz.example" but also foo/bar/baz.php with a key "example"
-    const countNestedKeys =
-        missingVar.substring(missingVar.indexOf(`${fileName}.`)).split(".")
-            .length - 1;
+    const startIndentNumber = nestedConfig.name
+        .substring(missingVar.indexOf(`${fileName}.`))
+        .split(".").length;
 
-    // Case when a user tries to add a new config key to an existing key that is not an array
-    if (!configPath.line && countNestedKeys > 1) {
-        return null;
-    }
+    const nestedKeys = missingVar
+        .slice(nestedConfig.name.length + 1)
+        .split(".");
 
     const configContents = await vscode.workspace.fs.readFile(
-        vscode.Uri.file(configPath.path),
+        vscode.Uri.file(path),
     );
 
-    const lineNumberFromConfig = configPath.line
-        ? Number(configPath.line) - 1
+    const lineNumberFromConfig = nestedConfig.line
+        ? Number(nestedConfig.line)
         : undefined;
 
     const lineNumber =
@@ -266,14 +283,15 @@ const addToFile = async (
         return null;
     }
 
-    const key = missingVar.split(".").pop();
+    const nestedKeysStructure = generateNestedKeysStructure(
+        nestedKeys,
+        startIndentNumber,
+    );
 
-    const indent = " ".repeat((getIndentNumber("php") ?? 4) * countNestedKeys);
-
-    const finalValue = `${indent}'${key}' => '',\n`;
+    const finalValue = nestedKeysStructure.join(os.EOL) + os.EOL;
 
     edit.insert(
-        vscode.Uri.file(configPath.path),
+        vscode.Uri.file(path),
         new vscode.Position(lineNumber, 0),
         finalValue,
     );
@@ -285,9 +303,9 @@ const addToFile = async (
 
     action.edit = edit;
     action.command = openFile(
-        configPath.path,
-        lineNumber,
-        finalValue.length - 3,
+        path,
+        lineNumber + nestedKeys.length - 1,
+        nestedKeysStructure[nestedKeys.length - 1].length - 2,
     );
     action.diagnostics = [diagnostic];
 

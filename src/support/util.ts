@@ -185,6 +185,31 @@ export const defaultToString = (value: any): string => {
     }
 };
 
+export const generateNestedKeysStructure = (
+    nestedKeys: string[],
+    startIndentNumber: number,
+) => {
+    return nestedKeys
+        .map((key, index, arr) =>
+            [
+                indent("", startIndentNumber + index),
+                `'${key}'`,
+                ` => `,
+                index === arr.length - 1 ? "''," : "[",
+            ].join(""),
+        )
+        .concat(
+            nestedKeys
+                .slice(0, -1)
+                .map((key, index, arr) =>
+                    [
+                        indent("", startIndentNumber + arr.length - 1 - index),
+                        "],",
+                    ].join(""),
+                ),
+        );
+};
+
 export const escapeNamespace = (namespace: string): string => {
     if (
         ["linux", "openbsd", "sunos", "darwin"].some((unixPlatforms) =>
