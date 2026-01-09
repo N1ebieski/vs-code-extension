@@ -75,7 +75,6 @@ declare namespace Eloquent {
 
     interface Model {
         class: string;
-        uri: string | false;
         database: string;
         table: string;
         policy: string | null;
@@ -83,7 +82,7 @@ declare namespace Eloquent {
         relations: Relation[];
         events: Event[];
         observers: Observer[];
-        scopes: Scope[];
+        scopes: string[];
         extends: string | null;
         name_cases: string[];
     }
