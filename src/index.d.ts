@@ -82,7 +82,7 @@ declare namespace Eloquent {
         relations: Relation[];
         events: Event[];
         observers: Observer[];
-        scopes: string[];
+        scopes: Scope[];
         extends: string | null;
         name_cases: string[];
     }
@@ -124,8 +124,6 @@ declare namespace Eloquent {
         path: string | null;
         start_line: number | false;
         parameters: ScopeParameter[];
-        path: string | null;
-        start_line: number | false;
     }
 
     interface ScopeParameter {
