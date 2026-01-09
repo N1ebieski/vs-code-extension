@@ -121,6 +121,8 @@ declare namespace Eloquent {
 
     interface Scope {
         name: string;
+        path: string | null;
+        start_line: number | false;
         parameters: ScopeParameter[];
         path: string | null;
         start_line: number | false;

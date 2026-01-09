@@ -176,7 +176,7 @@ $models = new class($factory) {
             ->map(fn(\\ReflectionMethod $method) => [
                 "name" => str($method->name)->replace('scope', '')->lcfirst()->toString(),
                 "path" => $method->getFileName() ? LaravelVsCode::relativePath($method->getFileName()) : null,  
-                "start_line" => $method->getStartLine(),
+                "start_line" => $method->getStartLine(),                
                 "parameters" => collect($method->getParameters())->map($this->getScopeParameterInfo(...)),
             ])
             ->values()
