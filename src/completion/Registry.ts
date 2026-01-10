@@ -82,6 +82,18 @@ export class Registry implements vscode.CompletionItemProvider {
             );
         };
 
+        const hasName = (names: FeatureTagParam["name"]) => {
+            if (typeof names === "undefined" || names === null) {
+                return parseResult.name() === null;
+            }
+
+            if (typeof names === "string") {
+                return names === parseResult.name();
+            }
+
+            return names.find((fn) => fn === parseResult.name()) !== undefined;
+        };
+
         const extendsClass = (
             classExtends: FeatureTagParam["classExtends"],
         ) => {
@@ -106,18 +118,6 @@ export class Registry implements vscode.CompletionItemProvider {
             }
 
             return parseResult.isInsideMethodDefinition(methodDefinition);
-        };
-
-        const hasName = (names: FeatureTagParam["name"]) => {
-            if (typeof names === "undefined" || names === null) {
-                return parseResult.name() === null;
-            }
-
-            if (typeof names === "string") {
-                return names === parseResult.name();
-            }
-
-            return names.find((fn) => fn === parseResult.name()) !== undefined;
         };
 
         const isArgumentIndex = (
