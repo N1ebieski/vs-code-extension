@@ -6,7 +6,7 @@ export const ActionMakeCommand: Command = {
         {
             name: "name",
             type: "namespace",
-            description: "The name of the cast class",
+            description: "The name of the action class",
         },
     ],
 };
