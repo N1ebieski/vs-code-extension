@@ -8,6 +8,7 @@ import { registerArtisanMakeCommands } from "./artisan/registry";
 import { bladeSpacer } from "./blade/bladeSpacer";
 import { initClient } from "./blade/client";
 import { commandName, openFileCommand } from "./commands";
+import { configureDockerEnvironment } from "./commands/configureDockerEnvironment";
 import { generateNamespaceCommand } from "./commands/generateNamespace";
 import {
     pintCommands,
@@ -287,6 +288,10 @@ export async function activate(context: vscode.ExtensionContext) {
             refactorAllHtmlClassesToBladeDirectives,
         ),
         ...registerArtisanMakeCommands(),
+        vscode.commands.registerCommand(
+            commandName("laravel.docker.configure"),
+            configureDockerEnvironment,
+        ),
     );
 
     collectDebugInfo();
