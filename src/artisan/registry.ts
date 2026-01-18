@@ -1,6 +1,7 @@
-import * as vscode from "vscode";
 import { runArtisanMakeCommand } from "@src/commands/artisan";
+import * as vscode from "vscode";
 
+import { ActionMakeCommand } from "./commands/ActionMakeCommand";
 import { CastMakeCommand } from "./commands/CastMakeCommand";
 import { ChannelMakeCommand } from "./commands/ChannelMakeCommand";
 import { ClassMakeCommand } from "./commands/ClassMakeCommand";
@@ -33,6 +34,7 @@ import { TraitMakeCommand } from "./commands/TraitMakeCommand";
 import { ViewMakeCommand } from "./commands/ViewMakeCommand";
 
 const artisanMakeCommands = {
+    "laravel.artisan.app.make.action": ActionMakeCommand,
     "laravel.artisan.make.cast": CastMakeCommand,
     "laravel.artisan.make.channel": ChannelMakeCommand,
     "laravel.artisan.make.class": ClassMakeCommand,

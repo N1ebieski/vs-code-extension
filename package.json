@@ -100,6 +100,11 @@
                     "group": "laravel"
                 },
                 {
+                    "command": "laravel.artisan.app.make.action",
+                    "when": "config.Laravel.artisanMake.commandPalette",
+                    "group": "laravel"
+                },                
+                {
                     "command": "laravel.artisan.make.cast",
                     "when": "config.Laravel.artisanMake.commandPalette",
                     "group": "laravel"
@@ -285,6 +290,11 @@
                 }
             ],
             "laravel.artisanMake.submenu": [
+                {
+                    "command": "laravel.artisan.app.make.action",
+                    "when": "config.Laravel.artisanMake.explorer && explorerResourceIsFolder && resourcePath =~ /(\\/|\\\\)Action(s?)(\\/|\\\\|$)/i",
+                    "group": "navigation"
+                },                
                 {
                     "command": "laravel.artisan.make.cast",
                     "when": "config.Laravel.artisanMake.explorer && explorerResourceIsFolder && resourcePath =~ /(\\/|\\\\)Cast(s?)(\\/|\\\\|$)/i",
@@ -542,6 +552,11 @@
                 "title": "Generate namespace",
                 "category": "Laravel"
             },
+            {
+                "command": "laravel.artisan.app.make.action",
+                "title": "Make Action",
+                "category": "Laravel"
+            },            
             {
                 "command": "laravel.artisan.make.cast",
                 "title": "Make Cast",
