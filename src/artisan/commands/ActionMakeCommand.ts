@@ -1,3 +1,4 @@
+import { forceOption } from "../options";
 import { Command } from "../types";
 
 export const ActionMakeCommand: Command = {
@@ -9,4 +10,5 @@ export const ActionMakeCommand: Command = {
             description: "The name of the action class",
         },
     ],
+    options: [forceOption],
 };
