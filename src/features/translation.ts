@@ -18,8 +18,8 @@ import { FeatureTag, HoverProvider, LinkProvider } from "..";
 
 const toFind: FeatureTag = [
     {
-        class: [contract("Translation\\Translator")],
-        method: ["get", "choice"],
+        class: contract("Translation\\Translator"),
+        method: ["get", "choice", "string"],
     },
     {
         class: facade("Lang"),

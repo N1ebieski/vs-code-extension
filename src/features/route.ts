@@ -19,12 +19,12 @@ const toFind: FeatureTag = [
         method: ["route", "signedRoute", "temporarySignedRoute"],
     },
     {
-        class: [contract("Routing\\UrlGenerator")],
+        class: contract("Routing\\UrlGenerator"),
         method: ["route", "signedRoute", "temporarySignedRoute"],
         argumentIndex: 0,
     },
     {
-        class: [contract("Routing\\ResponseFactory"), ...facade("Response")],
+        class: [...contract("Routing\\ResponseFactory"), ...facade("Response")],
         method: "redirectToRoute",
         argumentIndex: 0,
     },

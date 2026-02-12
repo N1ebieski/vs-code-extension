@@ -22,8 +22,8 @@ const toFind: FeatureTag = [
     },
     {
         class: [
-            contract("Container\\Container"),
-            contract("Foundation\\Application"),
+            ...contract("Container\\Container"),
+            ...contract("Foundation\\Application"),
         ],
         method: ["make", "bound"],
         argumentIndex: 0,
