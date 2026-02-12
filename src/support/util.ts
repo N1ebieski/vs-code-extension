@@ -33,12 +33,19 @@ export const attribute = (className: string): string => {
     return `Illuminate\\Container\\Attributes\\${className}`;
 };
 
-export const contract = (className: string): string => {
-    return `Illuminate\\Contracts\\${className}`;
+export const contract = (className: string): string[] => {
+    return [
+        `Illuminate\\Contracts\\${className}`,
+        override(`Illuminate\\Contracts\\${className}`),
+    ];
 };
 
 export const facade = (className: string): string[] => {
     return [className, support(`Facades\\${className}`)];
+};
+
+export const override = (className: string): string => {
+    return `App\\Overrides\\${className}`;
 };
 
 export const support = (className: string): string => {
