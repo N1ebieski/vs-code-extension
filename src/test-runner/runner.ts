@@ -1,9 +1,9 @@
-import * as vscode from "vscode";
 import { spawn } from "child_process";
+import * as vscode from "vscode";
 
-import { projectPath } from "@src/support/project";
 import { getCommand } from "@src/support/php";
-import { parseLine, buildErrorMessage, TeamcityEvent } from "./teamcity";
+import { projectPath } from "@src/support/project";
+import { buildErrorMessage, parseLine, TeamcityEvent } from "./teamcity";
 
 export const runHandler = async (
     controller: vscode.TestController,
@@ -18,8 +18,12 @@ export const runHandler = async (
         await executeTests([], testMap, run, token);
     } else {
         for (const item of request.include) {
-            if (token.isCancellationRequested) break;
-            if (request.exclude?.includes(item)) continue;
+            if (token.isCancellationRequested) {
+                break;
+            }
+            if (request.exclude?.includes(item)) {
+                continue;
+            }
 
             const testMap = buildTestMap(item, request.exclude);
             testMap.forEach((test) => run.enqueued(test));
@@ -33,9 +37,15 @@ export const runHandler = async (
 type ItemType = "suite" | "directory" | "file" | "test";
 
 const getItemType = (item: vscode.TestItem): ItemType => {
-    if (item.id.startsWith("suite:")) return "suite";
-    if (item.id.startsWith("dir:")) return "directory";
-    if (item.id.startsWith("file:")) return "file";
+    if (item.id.startsWith("suite:")) {
+        return "suite";
+    }
+    if (item.id.startsWith("dir:")) {
+        return "directory";
+    }
+    if (item.id.startsWith("file:")) {
+        return "file";
+    }
     return "test";
 };
 
@@ -66,7 +76,9 @@ const buildTestMap = (
     const map = new Map<string, vscode.TestItem>();
 
     const collect = (current: vscode.TestItem) => {
-        if (exclude?.includes(current)) return;
+        if (exclude?.includes(current)) {
+            return;
+        }
 
         if (current.children.size === 0) {
             const eventName = getEventName(current);
@@ -98,8 +110,10 @@ const buildTestMapFromController = (
 const isPhpDebugEnabled = (): boolean =>
     vscode.debug.activeDebugSession?.type === "php";
 
-const getXDebugCommand = (): string =>
-    isPhpDebugEnabled() ? "XDEBUG_TRIGGER=1" : "";
+const getProcessEnv = (): NodeJS.ProcessEnv => ({
+    ...(isPhpDebugEnabled() ? { XDEBUG_TRIGGER: "1" } : {}),
+    ...process.env,
+});
 
 const executeTests = async (
     args: string[],
@@ -109,12 +123,13 @@ const executeTests = async (
 ): Promise<void> => {
     return new Promise((resolve) => {
         const proc = spawn(
-            `${getXDebugCommand()} ${getCommand("artisan")}`.trim(),
+            getCommand("artisan"),
             ["test", ...args, "--colors=always", "--log-teamcity=php://stdout"],
             {
                 cwd: projectPath(),
                 shell: true,
                 detached: true,
+                env: getProcessEnv(),
             },
         );
 
@@ -168,7 +183,9 @@ const handleEvent = (
 ) => {
     const test = testMap.get(event.attributes.name);
 
-    if (!test) return;
+    if (!test) {
+        return;
+    }
 
     switch (event.type) {
         case "testStarted":
