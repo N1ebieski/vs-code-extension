@@ -1,4 +1,4 @@
-## [List of my pull requests](https://github.com/laravel/vs-code-extension/issues?q=is%3Apr%20author%3AN1ebieski)
+## [List of my pull requests](https://github.com/laravel/vs-code-extension/pulls?q=is%3Apr+author%3AN1ebieski+)
 
 ------------
 
