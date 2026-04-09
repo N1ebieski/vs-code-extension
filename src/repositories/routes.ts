@@ -2,7 +2,7 @@ import { inAppDirs } from "@src/support/fileWatcher";
 import { repository } from ".";
 import { runInLaravel, template } from "../support/php";
 
-interface RouteItem {
+export interface RouteItem {
     method: string;
     uri: string;
     name: string;
@@ -10,6 +10,7 @@ interface RouteItem {
     parameters: string[];
     filename: string | null;
     line: number | null;
+    livewire: string | null;
 }
 
 const routesPattern = "{[Rr]oute}{,s}{.php,/*.php,/**/*.php}";

@@ -8,6 +8,7 @@ import { bladeSpacer } from "./blade/bladeSpacer";
 import { initClient } from "./blade/client";
 import { commandName, openFileCommand } from "./commands";
 import { generateNamespaceCommand } from "./commands/generateNamespace";
+import { goToRouteCommand } from "./commands/goToRoute";
 import {
     pintCommands,
     PintEditProvider,
@@ -45,8 +46,12 @@ import {
 } from "./support/php";
 import { hasWorkspace, projectPathExists } from "./support/project";
 import { cleanUpTemp } from "./support/util";
-import { registerArtisanMakeCommands } from "./artisan/registry";
+import {
+    registerArtisanCommands,
+    registerArtisanMakeCommands,
+} from "./artisan/registry";
 import { configureDockerEnvironment } from "./commands/configureDockerEnvironment";
+import { registerPestHelper } from "./features/pest";
 import { registerTestRunner } from "./test-runner";
 
 let client: LanguageClient;
@@ -93,6 +98,10 @@ export async function activate(context: vscode.ExtensionContext) {
         vscode.commands.registerCommand(
             commandName("laravel.namespace.generate"),
             generateNamespaceCommand,
+        ),
+        vscode.commands.registerCommand(
+            commandName("laravel.goToRoute"),
+            goToRouteCommand,
         ),
     );
 
@@ -261,6 +270,7 @@ export async function activate(context: vscode.ExtensionContext) {
             refactorAllHtmlClassesToBladeDirectives,
         ),
         ...registerArtisanMakeCommands(),
+        ...registerArtisanCommands(),
         vscode.commands.registerCommand(
             commandName("laravel.docker.configure"),
             configureDockerEnvironment,
@@ -275,6 +285,7 @@ export async function activate(context: vscode.ExtensionContext) {
         }
     });
 
+    registerPestHelper();
     registerTestRunner();
 }
 
