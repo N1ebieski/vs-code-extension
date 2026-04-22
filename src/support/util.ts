@@ -127,7 +127,7 @@ export const waitForValue = <T>(
                 return resolve(value());
             }
 
-            if (value() === null) {
+            if (!value()) {
                 return setTimeout(checkForValue, 100);
             }
 
