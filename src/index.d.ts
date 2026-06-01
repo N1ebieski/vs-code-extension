@@ -84,6 +84,7 @@ declare namespace Eloquent {
         scopes: Scope[];
         extends: string | null;
         path: string;
+        name_cases: string[];
     }
 
     interface Attribute {
@@ -98,6 +99,7 @@ declare namespace Eloquent {
         appended: null;
         cast: string | null;
         title_case: string;
+        name_cases: string[];
         documented: boolean;
     }
 
