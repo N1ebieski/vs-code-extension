@@ -1,11 +1,11 @@
-import { FileDownloader } from "../downloaders/FileDownloader";
-import { IAsset } from "../downloaders/IGitHubRelease";
-import OutputLogger from "../downloaders/logging/OutputLogger";
-import HttpRequestHandler from "../downloaders/networking/HttpRequestHandler";
 import * as fs from "fs";
 import * as os from "os";
 import * as path from "path";
 import * as vscode from "vscode";
+import { FileDownloader } from "../downloaders/FileDownloader";
+import { IAsset } from "../downloaders/IGitHubRelease";
+import OutputLogger from "../downloaders/logging/OutputLogger";
+import HttpRequestHandler from "../downloaders/networking/HttpRequestHandler";
 
 const LAST_UPDATE_CHECK_KEY = "laravel.lsp.lastUpdateCheck";
 export const LSP_UPDATE_THROTTLE_MS = 2 * 60 * 60 * 1000;
@@ -208,7 +208,7 @@ const performLspBinaryUpdate = async (
     await context.globalState.update(LAST_UPDATE_CHECK_KEY, Date.now());
 
     const downloader = getFileDownloader(context);
-    const release = await downloader.getLatestGitHubRelease("laravel", "lsp");
+    const release = await downloader.getLatestGitHubRelease("N1ebieski", "lsp");
 
     if (!release) {
         throw new Error("Unable to retrieve the latest Laravel LSP release");
